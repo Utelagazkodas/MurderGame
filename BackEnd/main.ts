@@ -14,7 +14,7 @@ export const allPlayers = db.prepare("SELECT name, alive FROM players")
 export const IDLENGTH = 16
 
 
-// let stmt = db.prepare("SELECT * FROM players").all()
+// let stmt = db.prepare("SELECT id, name, isKiller FROM players").all()
 // console.log(stmt)
 
 if (false){

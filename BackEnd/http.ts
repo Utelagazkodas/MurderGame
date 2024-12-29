@@ -26,10 +26,11 @@ function get(req: Request, inf : Deno.ServeHandlerInfo<Deno.NetAddr>) : Response
         console.timeEnd("searchID Query Time");
 
         if(t.length != 1){
-            return new Response("id doesnt exist")
+            
+            return new Response("id doesnt exist", {status: 404})
         }
     
-        return new Response(JSON.stringify(t[0]))
+        return new Response(JSON.stringify(t[0]), {status: 200})
     }
     if(formatted == "/players"){
         
@@ -37,10 +38,10 @@ function get(req: Request, inf : Deno.ServeHandlerInfo<Deno.NetAddr>) : Response
         const t = allPlayers.all();
         console.timeEnd("allPlayers Query Time");
 
-        return new Response(JSON.stringify(t))
+        return new Response(JSON.stringify(t), {status: 200})
     }
     
-    return new Response("404")
+    return new Response("404", {status: 404})
    
 
 }

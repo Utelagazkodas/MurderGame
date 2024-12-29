@@ -9,9 +9,11 @@
     console.log(id)
 
     if (id.length == 16) {
-      idSet = true
-      let resp = await (await fetch("http://0.0.0.0:8000/id/" + id)).text()
-      console.log(resp); // Log the response to verify the request
+      
+      let resp = await fetch("http://0.0.0.0:8000/id/" + id)
+      if(resp != "id doesnt exist"){
+
+      }
     }
   }
 </script>
