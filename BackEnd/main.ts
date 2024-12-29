@@ -8,15 +8,16 @@ import {randomNumber} from "@izmus/random-number"
 
 const db = new Database("database.db");
 
-export const search = db.prepare("SELECT * FROM players WHERE id = (:id)")
+export const searchID = db.prepare("SELECT * FROM players WHERE id = (:id)")
+export const allPlayers = db.prepare("SELECT name, alive FROM players")
 
 export const IDLENGTH = 16
 
 
-// let stmt = db.prepare("SELECT id, name, isKiller FROM players").all()
+// let stmt = db.prepare("SELECT * FROM players").all()
 // console.log(stmt)
 
-if (confirm("New game?")){
+if (false){
     let name : string | null = null
 
     let players : string[] = []
@@ -46,7 +47,7 @@ if (confirm("New game?")){
 
     db.exec("DELETE FROM players")
 
-    const insertStmt = db.prepare("INSERT INTO players (id, name, isKiller) VALUES ((:id), (:name), (:isKiller))");
+    const insertStmt = db.prepare("INSERT INTO players (id, name, isKiller, alive) VALUES ((:id), (:name), (:isKiller), 1)");
     for (let i = 0; i < players.length; i++) {
         const key : string = await generate(IDLENGTH)
         const killerString = killer == i ? 1 : 0

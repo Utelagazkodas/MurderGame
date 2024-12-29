@@ -10,7 +10,7 @@
 
     if (id.length == 16) {
       idSet = true
-      let resp = await (await fetch("http://0.0.0.0:8000/" + id)).text()
+      let resp = await (await fetch("http://0.0.0.0:8000/id/" + id)).text()
       console.log(resp); // Log the response to verify the request
     }
   }
