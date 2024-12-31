@@ -15,7 +15,9 @@
         "README.md": true,
         "tsconfig.json": true,
         "vite.config.ts": true,
-        "src/app.d.ts": true
+        "src/app.d.ts": true,
+        "node_modules": true,
+        ".svelte-kit": true
     },
     "explorerExclude.backup": {}
 }

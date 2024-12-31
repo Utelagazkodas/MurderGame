@@ -17,7 +17,7 @@ export function formatURL(url : string, dashAtFront : boolean = true) : string {
             n += 1
             if(n == 3){
                 const ret = url.slice(i + offset, url.length)
-                formatCache.push(url.slice(0, i +offset))
+                formatCache.push(url.slice(0, i))
                 return ret
             }
         }
