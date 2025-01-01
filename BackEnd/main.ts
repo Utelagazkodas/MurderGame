@@ -10,7 +10,7 @@ const db = new Database("database.db");
 
 export const searchID = db.prepare("SELECT * FROM players WHERE id = (:id)")
 export const allPlayers = db.prepare("SELECT name, alive, publicID FROM players")
-export const killPlayer = db.prepare("UPDATE players SET alive=0 WHERE publicID= (:publicID) ")
+export const killPlayer = db.prepare("UPDATE players SET alive=0 WHERE publicID= (:publicID) AND alive=1")
 
 export const IDLENGTH : number = 16
 const PORT = 3000

@@ -1,0 +1,49 @@
+{
+	"compilerOptions": {
+		"paths": {
+			"$lib": [
+				"../FrontEnd/src/lib"
+			],
+			"$lib/*": [
+				"../FrontEnd/src/lib/*"
+			]
+		},
+		"rootDirs": [
+			"../FrontEnd",
+			"./types"
+		],
+		"verbatimModuleSyntax": true,
+		"isolatedModules": true,
+		"lib": [
+			"esnext",
+			"DOM",
+			"DOM.Iterable"
+		],
+		"moduleResolution": "bundler",
+		"module": "esnext",
+		"noEmit": true,
+		"target": "esnext"
+	},
+	"include": [
+		"ambient.d.ts",
+		"non-ambient.d.ts",
+		"./types/**/$types.d.ts",
+		"../FrontEnd/vite.config.js",
+		"../FrontEnd/vite.config.ts",
+		"../FrontEnd/src/**/*.js",
+		"../FrontEnd/src/**/*.ts",
+		"../FrontEnd/src/**/*.svelte",
+		"../FrontEnd/tests/**/*.js",
+		"../FrontEnd/tests/**/*.ts",
+		"../FrontEnd/tests/**/*.svelte"
+	],
+	"exclude": [
+		"../FrontEnd/node_modules/**",
+		"../FrontEnd/src/service-worker.js",
+		"../FrontEnd/src/service-worker/**/*.js",
+		"../FrontEnd/src/service-worker.ts",
+		"../FrontEnd/src/service-worker/**/*.ts",
+		"../FrontEnd/src/service-worker.d.ts",
+		"../FrontEnd/src/service-worker/**/*.d.ts"
+	]
+}

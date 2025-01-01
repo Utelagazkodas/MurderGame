@@ -61,11 +61,11 @@ async function post(req: Request, inf : Deno.ServeHandlerInfo<Deno.NetAddr>) : P
         const auth = await req.text()
         
         if(auth == killerID){
-            if(killPlayer.run({publicID : formatted.slice(5, formatted.length)}) == 1){
-            return new Response("Killed someone")
+            if(killPlayer.run({publicID : formatted.slice(5, formatted.length)}) != 0){
+                return new Response("Killed someone")
             }
             else{
-                return new Response("PlayerID not found", {status: 404})
+                return new Response("PlayerID not found or already dead", {status: 404})
             }
         }
         else{

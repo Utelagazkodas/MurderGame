@@ -3,7 +3,7 @@
 	"version": "0.0.1",
 	"scripts": {
 		"dev": "vite dev",
-		"build": "vite build && npm run package",
+		"build": "vite build --emptyOutDir && npm run package ",
 		"preview": "vite preview",
 		"package": "svelte-kit sync && svelte-package && publint",
 		"prepublishOnly": "npm run package",
@@ -32,6 +32,7 @@
 	},
 	"devDependencies": {
 		"@sveltejs/adapter-auto": "^3.0.0",
+		"@sveltejs/adapter-static": "^3.0.8",
 		"@sveltejs/kit": "^2.0.0",
 		"@sveltejs/package": "^2.0.0",
 		"@sveltejs/vite-plugin-svelte": "^4.0.0",
@@ -44,6 +45,8 @@
 		"vite": "^5.4.11"
 	},
 	"dependencies": {
-		"@tailwindcss/typography": "^0.5.15"
+		"@tailwindcss/typography": "^0.5.15",
+		"clsx": "^2.1.1",
+		"typescript-cookie": "^1.0.6"
 	}
 }
