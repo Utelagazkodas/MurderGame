@@ -7,10 +7,10 @@ export let otherUsers: Writable<user[] | undefined> = writable(undefined)
 export let IPADRESS = "http://0.0.0.0:3000/"
 
 export async function getIP() {
-    let resp = await fetch(`http://${window.location.hostname}:${window.location.port}/ip.json`)
+    let resp = await fetch(`./ip`)
     if (resp.ok) {
 
-        IPADRESS =JSON.parse(await resp.text())
+        IPADRESS = await resp.text()
     }  
 }
 

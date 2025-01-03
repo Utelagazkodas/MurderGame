@@ -21,7 +21,6 @@ export async function request(req: Request, inf : Deno.ServeHandlerInfo<Deno.Net
 function get(req: Request, inf : Deno.ServeHandlerInfo<Deno.NetAddr>) : Response{
 
     const formatted : string = formatURL(req.url, false)
-    console.log(req.url,formatted)
 
 
     if(formatted.startsWith("id/") && formatted.length == IDLENGTH + 3){
