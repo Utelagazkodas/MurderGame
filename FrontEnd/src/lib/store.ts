@@ -5,14 +5,12 @@ export let thisUser: Writable<user | undefined> = writable(undefined)
 export let otherUsers: Writable<user[] | undefined> = writable(undefined)
 
 export let IPADRESS = "http://0.0.0.0:3000/"
-//http://0.0.0.0:8000/
 
 export async function getIP() {
     let resp = await fetch(`http://${window.location.hostname}:${window.location.port}/ip.json`)
     if (resp.ok) {
-        let t : {ip: String, port: number} = JSON.parse(await resp.text())
 
-        IPADRESS ="http://" + t.ip + ":" + t.port + "/"
+        IPADRESS =JSON.parse(await resp.text())
     }  
 }
 

@@ -1,1 +1,0 @@
-export { default as component } from "../../../../FrontEnd/src/routes/+layout.svelte";
