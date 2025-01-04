@@ -154,7 +154,7 @@
 
       {#if $otherUsers}
         <!-- Other users -->
-        <div class="flex flex-col items-center text-lg *:w-full *:m-2 text-center *:border  *:rounded-full *:border-2">
+        <div class="flex flex-col items-center text-lg *:w-full *:m-2 text-center  *:rounded-full *:border-2">
           {#each $otherUsers as user}
             
 
