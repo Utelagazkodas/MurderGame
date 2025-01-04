@@ -1,12 +1,14 @@
 {
   "tasks": {
     "dev": "deno run --watch -A main.ts ",
-    "run": "deno run --allow-env --allow-read --allow-ffi --allow-net main.ts "
+    "run": "deno run --allow-env --allow-read --allow-ffi --allow-net main.ts ",
+    "gen": "deno run --allow-env --allow-read --allow-ffi --allow-net gen.ts"
   },
   "imports": {
     "@alikia/random-key": "jsr:@alikia/random-key@^1.0.1",
     "@dldc/sqlite": "jsr:@dldc/sqlite@^3.1.0",
     "@izmus/random-number": "jsr:@izmus/random-number@^0.1.1",
-    "@std/assert": "jsr:@std/assert@1"
+    "@std/assert": "jsr:@std/assert@1",
+    "@std/dotenv": "jsr:@std/dotenv@^0.225.3"
   }
 }
