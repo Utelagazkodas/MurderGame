@@ -1,0 +1,2 @@
+A small randomizer for me and my friends to pick a killer AMONG US, also some extra features, you can run the server on a raspberry with a cloudflared quick tunnel, to generate the database run `deno task gen` then to run it just run `deno task run`
+You can build  the frontend with `npm run build` and it will automatically build it to the docs folder where a github pages runs, so it has an https certificate with the cloudflared tunnel which is https as well.
