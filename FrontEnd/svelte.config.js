@@ -7,13 +7,14 @@ const config = {
 	// for more information about preprocessors
 	preprocess: vitePreprocess(),
 
+
 	kit: {
 		// adapter-auto only supports some environments, see https://svelte.dev/docs/kit/adapter-auto for a list.
 		// If your environment is not supported, or you settled on a specific environment, switch out the adapter.
 		// See https://svelte.dev/docs/kit/adapters for more information about adapters.
 		adapter: adapter({
-			pages: "./../docs",
-			assets: "./../docs",
+			pages:  process.env.BUILD_PATH || "./../docs",
+			assets: process.env.BUILD_PATH || "./../docs",
 			fallback: undefined,
 			precompress: false,
 			strict: true
@@ -21,6 +22,8 @@ const config = {
 		// paths: {
 		// 	base: process.argv.includes('dev') ? '' : process.env.BASE_PATH
 		// }
+
+		appDir:"app",
 	}
 };
 

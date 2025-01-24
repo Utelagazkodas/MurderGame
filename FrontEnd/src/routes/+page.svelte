@@ -118,11 +118,9 @@
 </script>
 
 <div
-  class="w-screen h-screen flex place-content-center items-center bg-gray-800"
+  class="max-w-screen h-screen bg-gray-600 p-5"
 >
-  <div
-    class="max-w-screen max-h-screen bg-gray-700 rounded-2xl p-6 m-5 h-[90vh] aspect-9/16 lg:aspect-12/9 border border-gray-400 text-gray-200"
-  >
+
     {#if !idSet}
       <form onsubmit={setId} class="text-gray-700">
         <input
@@ -325,5 +323,5 @@
         {/each}
       </div>
     {/if}
-  </div>
+  
 </div>

@@ -1,5 +1,6 @@
 node_modules
 
+devbuild
 # Output
 .output
 .vercel
