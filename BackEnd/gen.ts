@@ -2,6 +2,7 @@ import "jsr:@std/dotenv/load";
 import { generate } from "@alikia/random-key";
 import { randomNumber } from "@izmus/random-number"
 import { Database } from "jsr:@db/sqlite";
+import { getUnixTime } from "./util.ts";
 
 
 export const IDLENGTH : number = Number(Deno.env.get("IDLENGTH"))
@@ -62,7 +63,7 @@ await kvconst.set(["NAMELENGTH"], NAMELENGTH)
 await kvconst.set(["MEETINGLENGTH"], Number(Deno.env.get("MEETINGLENGTH")))
 await kvconst.set(["KILLCOOLDOWN"], Number(Deno.env.get("KILLCOOLDOWN")))
 await kvconst.set(["GAMELENGTH"], Number(Deno.env.get("GAMELENGTH")))
-await kvconst.set(["GAMESTART"], Math.round(Date.now()/1000))
+await kvconst.set(["GAMESTART"], getUnixTime())
 
 
 

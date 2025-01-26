@@ -55,5 +55,4 @@ db.prepare("SELECT id, isKiller FROM players").all().forEach((user) => {
 })
 
 // starts the http server
-Deno.serve({ port: PORT }, (req: Request, inf: Deno.ServeHandlerInfo<Deno.NetAddr>) => request(req, inf));
-
+Deno.serve({ port: PORT}, (req: Request, inf: Deno.ServeHandlerInfo<Deno.NetAddr>) => request(req, inf));

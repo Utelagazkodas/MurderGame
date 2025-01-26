@@ -24,3 +24,7 @@ export function formatURL(url : string, dashAtFront : boolean = true) : string {
     }
     throw "error, wrong type of string at " + url
 }
+
+export function getUnixTime() : number{
+    return Math.round(Date.now()/1000)
+}
