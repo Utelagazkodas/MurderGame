@@ -8,7 +8,7 @@ export async function request(req: Request, inf : Deno.ServeHandlerInfo<Deno.Net
 
     switch (req.method) {
         case "GET":
-            resp = await get(req,inf)
+            resp = get(req,inf)
             break;
         case "POST":
             resp = await post(req,inf)
@@ -21,7 +21,7 @@ export async function request(req: Request, inf : Deno.ServeHandlerInfo<Deno.Net
 }
 
 
-async function get(req: Request, inf : Deno.ServeHandlerInfo<Deno.NetAddr>){
+function get(req: Request, _inf : Deno.ServeHandlerInfo<Deno.NetAddr>){
 
     const formatted : string = formatURL(req.url, false)
 
@@ -68,9 +68,10 @@ async function get(req: Request, inf : Deno.ServeHandlerInfo<Deno.NetAddr>){
 
 }
 
-async function post(req: Request, inf : Deno.ServeHandlerInfo<Deno.NetAddr>) : Promise<Response>{
+async function post(req: Request, _inf : Deno.ServeHandlerInfo<Deno.NetAddr>) : Promise<Response>{
     const formatted : string = formatURL(req.url, false)
 
+    // handles killing
     if(formatted.startsWith("kill/") && formatted.length == IDLENGTH + 5){
         if(!req.body){
             return new Response("Request body is required", {status: 400})
@@ -90,6 +91,8 @@ async function post(req: Request, inf : Deno.ServeHandlerInfo<Deno.NetAddr>) : P
             return new Response("Unauthorized", {status: 401})
         }
     }
+
+
 
     return new Response("404, bad post format", {status: 404})
 

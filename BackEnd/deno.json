@@ -1,8 +1,8 @@
 {
   "tasks": {
-    "dev": "deno run --watch -A main.ts ",
-    "run": "deno run --allow-env --allow-read --allow-ffi --allow-net main.ts ",
-    "gen": "deno run --allow-env --allow-read --allow-ffi --allow-net gen.ts"
+    "dev": "deno run --watch --allow-read --allow-ffi --allow-net --allow-env --allow-write --unstable-kv main.ts ",
+    "run": "deno run --allow-read --allow-ffi --allow-net --unstable-kv --allow-env --allow-write main.ts ",
+    "gen": "deno run --allow-env --allow-read --allow-ffi --allow-write --allow-net --unstable-kv gen.ts"
   },
   "imports": {
     "@alikia/random-key": "jsr:@alikia/random-key@^1.0.1",
