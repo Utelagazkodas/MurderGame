@@ -31,6 +31,7 @@ export const MEETINGLENGTH = Number((await kvconst.get(["MEETINGLENGTH"])).value
 export const KILLCOOLDOWN = Number((await kvconst.get(["KILLCOOLDOWN"])).value)
 export const GAMELENGTH = Number((await kvconst.get(["GAMELENGTH"])).value)
 export const GAMESTART = Number((await kvconst.get(["GAMESTART"])).value)
+export const REVEALDEATH = Number((await kvconst.get(["REVEALDEATH"])).value)
 kvconst.close()
 
 console.log("IDLENGTH:", IDLENGTH);

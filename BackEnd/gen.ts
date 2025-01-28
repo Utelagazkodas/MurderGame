@@ -46,7 +46,10 @@ for (let i = 0; i < numOfPlayers; i++) {
 
 
 // ---- deletes then creates the database ----
-await Deno.remove("gamedata", {recursive: true})
+try {
+    await Deno.remove("gamedata", {recursive: true})
+} catch (_error) {/**/}
+
 await Deno.mkdir("gamedata")
 
 // KEY VALUE DATABASE
@@ -64,6 +67,7 @@ await kvconst.set(["MEETINGLENGTH"], Number(Deno.env.get("MEETINGLENGTH")))
 await kvconst.set(["KILLCOOLDOWN"], Number(Deno.env.get("KILLCOOLDOWN")))
 await kvconst.set(["GAMELENGTH"], Number(Deno.env.get("GAMELENGTH")))
 await kvconst.set(["GAMESTART"], getUnixTime())
+await kvconst.set(["REVEALDEATH"], Number(Deno.env.get("REVEALDEATH")))
 
 
 
