@@ -1,7 +1,7 @@
 import "jsr:@std/dotenv/load";
 import { allPlayersKiller, IDLENGTH, kv, publicIDs, REVEALDEATH, validIDs, votePlayer } from "./main.ts";
 import { searchID, allPlayers, killerID, killPlayer, publicAllPlayers, callMeeting } from "./main.ts";
-import { formatURL, GameData, getGameData, getUnixTime, isMeeting, player, } from "./util.ts";
+import { formatURL, GameData, getGameData, getUnixTime, isGameGoing, isMeeting, player, } from "./util.ts";
 
 export async function request(req: Request, inf: Deno.ServeHandlerInfo<Deno.NetAddr>): Promise<Response> {
     let resp: Response = new Response
@@ -83,6 +83,11 @@ async function get(req: Request, _inf: Deno.ServeHandlerInfo<Deno.NetAddr>) {
 }
 
 async function post(req: Request, _inf: Deno.ServeHandlerInfo<Deno.NetAddr>): Promise<Response> {
+
+    if(!isGameGoing()){
+        new Response("Game ended", {status: 500})
+    }
+
     const formatted: string = formatURL(req.url, false)
 
 

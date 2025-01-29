@@ -2,6 +2,7 @@ import "jsr:@std/dotenv/load";
 import { request } from "./http.ts";
 
 import { Database } from "jsr:@db/sqlite";
+import { isGameGoing } from "./util.ts";
 
 
 // KV DATABASE
@@ -50,15 +51,27 @@ export const endMeeting = db.prepare("UPDATE players SET voteID=NULL")
 // env variables
 const PORT : number = Number(Deno.env.get("PORT"))
 
+let alive : number = 0
 
-
-db.prepare("SELECT id, publicID, isKiller FROM players").all().forEach((user) => {
+db.prepare("SELECT id, publicID, isKiller, revealDeath FROM players").all().forEach((user) => {
     validIDs.push(user.id)
     publicIDs.push(user.publicID)
     if (user.isKiller) {
         killerID = user.id
+
+        if(user.revealDeath != null){
+            kv.set(["gameWon"], 1)
+        }
+    }
+
+    if(user.revealDeath == null){
+        alive+= 1
     }
 })
+
+if(await isGameGoing() && alive == 2){
+    kv.set(["gameWon"], -1)
+}
 
 // starts the http server
 Deno.serve({ port: PORT}, (req: Request, inf: Deno.ServeHandlerInfo<Deno.NetAddr>) => request(req, inf));

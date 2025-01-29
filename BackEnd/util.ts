@@ -34,7 +34,7 @@ export function getUnixTime(): number {
 
 export async function getGameData(): Promise<GameData> {
     // collects all the game data, and constants
-    return { meetingStart: Number(await kv.get(["meetingStart"])), gameWon: Number(await kv.get(["gameWon"])), lastKill: Number(await kv.get(["lastKill"])), killCoolDown: KILLCOOLDOWN, gameLength: GAMELENGTH, gameStart: GAMESTART, revealDeath: REVEALDEATH }
+    return { meetingStart: Number((await kv.get(["meetingStart"])).value), gameWon: Number((await kv.get(["gameWon"])).value), lastKill: Number((await kv.get(["lastKill"])).value), killCoolDown: KILLCOOLDOWN, gameLength: GAMELENGTH, gameStart: GAMESTART, revealDeath: REVEALDEATH }
 }
 
 export async function isMeeting(): Promise<boolean> {
@@ -80,6 +80,10 @@ export function EndMeeting():void{
     }
 
     endMeeting.run()
+}
+
+export async function isGameGoing(){
+    return Number((await kv.get(["gameWon"])).value) == 0
 }
 
 // CLASSES
