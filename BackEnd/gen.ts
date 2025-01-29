@@ -73,7 +73,7 @@ await kvconst.set(["REVEALDEATH"], Number(Deno.env.get("REVEALDEATH")))
 
 // sqlite database
 const db = new Database("gamedata/database.db", {create: true});
-db.exec(`CREATE TABLE players (id VARCHAR(${IDLENGTH}) NOT NULL PRIMARY KEY, name VARCHAR(${NAMELENGTH}) NOT NULL,  isKiller BOOLEAN NOT NULL, alive BOOLEAN NOT NULL, publicID VARCHAR(${IDLENGTH}) NOT NULL, nickname VARCHAR(${NAMELENGTH}) NOT NULL, voteID VARCHAR(${IDLENGTH}), canCallMeeting BOOLEAN NOT NULL, extraKills INT)`)
+db.exec(`CREATE TABLE players (id VARCHAR(${IDLENGTH}) NOT NULL PRIMARY KEY, name VARCHAR(${NAMELENGTH}) NOT NULL,  isKiller BOOLEAN NOT NULL, revealDeath INT, publicID VARCHAR(${IDLENGTH}) NOT NULL, nickname VARCHAR(${NAMELENGTH}) NOT NULL, voteID VARCHAR(${IDLENGTH}), canCallMeeting BOOLEAN NOT NULL, extraKills INT)`)
 
 // generates the killer
 const killer = randomNumber([0, players.length - 1])
@@ -81,7 +81,7 @@ const killer = randomNumber([0, players.length - 1])
 
 
 // puts the players into the sqlite database
-const insertStmt = db.prepare("INSERT INTO players (id, name, isKiller, alive, publicID, nickname, canCallMeeting, voteID, extraKills) VALUES ((:id), (:name), (:isKiller), 1, (:publicID), (:nickname), 1, NULL, (:extraKills))");
+const insertStmt = db.prepare("INSERT INTO players (id, name, isKiller, revealDeath, publicID, nickname, canCallMeeting, voteID, extraKills) VALUES ((:id), (:name), (:isKiller), NULL,(:publicID), (:nickname), 1, NULL, (:extraKills))");
 for (let i = 0; i < players.length; i++) {
     const key: string = players[i].privateId
     const publicID: string = await generate(IDLENGTH)
