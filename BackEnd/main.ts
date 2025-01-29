@@ -2,7 +2,8 @@ import "jsr:@std/dotenv/load";
 import { request } from "./http.ts";
 
 import { Database } from "jsr:@db/sqlite";
-import { isGameGoing } from "./util.ts";
+import { getUnixTime } from "./util.ts";
+import { isGameGoing } from "./gameutils.ts";
 
 
 // KV DATABASE
@@ -43,23 +44,30 @@ export const voteOutPlayer = db.prepare("UPDATE players SET revealDeath=-1 WHERE
 
 export const votePlayer = db.prepare("UPDATE players SET voteID=(:voteID) WHERE id= (:privateID) AND revealDeath IS NULL")
 
-export const callMeeting = db.prepare("UPDATE players SET canCallMeeting=0 WHERE canCallMeeting=1 AND id = (:privateID) AND revealDeath IS NULL")
+export const callMeeting = db.prepare("UPDATE players SET canCallMeeting=canCallMeeting-1 WHERE canCallMeeting>0 AND id = (:privateID) AND revealDeath IS NULL")
 
-export const getVotes = db.prepare("SELECT voteID from players WHERE revealDeath=NULL")
+export const getVotes = db.prepare("SELECT voteID from players WHERE revealDeath IS NULL")
 export const endMeeting = db.prepare("UPDATE players SET voteID=NULL")
+
+export const extraKill = db.prepare("UPDATE players SET extraKills=extraKills-1 WHERE extraKills>0")
+
+export const getAlive = db.prepare("SELECT COUNT() FROM players WHERE revealDeath IS NULL") // returns the amount of alive players
+
+console.log(getAlive.run())
 
 // env variables
 const PORT : number = Number(Deno.env.get("PORT"))
 
 let alive : number = 0
+const t = await isGameGoing()
 
-db.prepare("SELECT id, publicID, isKiller, revealDeath FROM players").all().forEach((user) => {
+db.prepare("SELECT id, publicID, isKiller, revealDeath FROM players").all().forEach( (user) => {
     validIDs.push(user.id)
     publicIDs.push(user.publicID)
     if (user.isKiller) {
         killerID = user.id
 
-        if(user.revealDeath != null){
+        if(user.revealDeath != null && t){
             kv.set(["gameWon"], 1)
         }
     }
@@ -69,8 +77,12 @@ db.prepare("SELECT id, publicID, isKiller, revealDeath FROM players").all().forE
     }
 })
 
-if(await isGameGoing() && alive == 2){
+// checks if the game is won
+if(t && alive == 2){
     kv.set(["gameWon"], -1)
+}
+else if(t && getUnixTime() > GAMESTART + GAMELENGTH){
+    kv.set(["gameWon"], 1)
 }
 
 // starts the http server
