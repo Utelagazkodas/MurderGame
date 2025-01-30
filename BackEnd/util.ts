@@ -36,31 +36,15 @@ export function getUnixTime(): number {
 // CLASSES
 
 export class GameData {
-    meetingStart: number
-    gameWon: number
-    lastKill: number
-    killCoolDown: number
-    gameLength: number
-    gameStart: number
-    revealDeath: number
-
-    constructor(
-        meetingStart: number,
-        gameWon: number,
-        lastKill: number,
-        killCoolDown: number,
-        gameLength: number,
-        gameStart: number,
-        revealDeath: number
-    ) {
-        this.meetingStart = meetingStart
-        this.gameWon = gameWon
-        this.lastKill = lastKill
-        this.killCoolDown = killCoolDown
-        this.gameLength = gameLength
-        this.gameStart = gameStart
-        this.revealDeath = revealDeath
-    }
+    meetingStart?: number
+    gameWon?: number
+    lastKill?: number
+    killCoolDown?: number
+    gameLength?: number
+    gameStart?: number
+    revealDeath?: number
+    killerID? : string
+    isMeeting? : boolean
 }
 
 export class player{
