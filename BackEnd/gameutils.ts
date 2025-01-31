@@ -1,4 +1,4 @@
-import { endMeeting, killerPublicID, revealDead, voteOutPlayer } from "./main.ts";
+import { endMeeting, IDLENGTH, killerPublicID, revealDead, voteOutPlayer } from "./main.ts";
 import { GAMELENGTH, GAMESTART, KILLCOOLDOWN, kv, MEETINGLENGTH, REVEALDEATH, getVotes } from "./main.ts";
 import { GameData, getUnixTime } from "./util.ts";
 
@@ -12,9 +12,10 @@ export async function getGameData(): Promise<GameData> {
     console.log(`Game Data - Meeting Start: ${meetingStart}, Game Won: ${gameWon}, Last Kill: ${lastKill}`)
 
     return { 
-        meetingStart, 
-        gameWon, 
-        lastKill, 
+        idLength : IDLENGTH,
+        meetingStart: meetingStart, 
+        gameWon : gameWon, 
+        lastKill: lastKill, 
         killCoolDown: KILLCOOLDOWN, 
         gameLength: GAMELENGTH, 
         gameStart: GAMESTART, 

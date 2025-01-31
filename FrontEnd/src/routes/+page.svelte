@@ -1,120 +1,16 @@
 <script lang="ts">
-  import { onMount } from "svelte";
+  import { idSet, logout, setId} from "$lib/api.js";
   import {
-    getIP,
-    IPADRESS,
-    killerPopup,
-    otherUsers,
-    thisUser,
-    type user,
-  } from "../lib/store.js";
-  import { setCookie, getCookie, removeCookie } from "typescript-cookie";
 
-  let id = $state("");
-  let idSet = $state(false);
-  let killUser = $state<user | undefined>(undefined);
+    
+  } from "../lib/store.js"
 
-  let refreshIntervalId: number;
-  onMount(async () => {
-    await getIP();
+  let id : string = $state("")
 
-    let t = getCookie("id");
+  export function resetIdTextInput(){
+    id = ""
+  }
 
-    refresh();
-
-    if (t) {
-      id = t;
-      setId();
-    }
-  });
-
-  let setId = async (event?: Event) => {
-    if (event) {
-      event.preventDefault();
-    }
-
-    if (id.length == 16) {
-      let resp = await fetch(IPADRESS + "id/" + id);
-
-      if (resp.ok) {
-        let respText = await resp.text();
-        idSet = true;
-
-        thisUser.set(JSON.parse(respText));
-
-        setCookie("id", id);
-
-        refresh();
-
-        refreshIntervalId = setInterval(refresh, 5000);
-      }
-    }
-  };
-
-  let refresh = async (event?: Event) => {
-    if (event) {
-      event.preventDefault();
-    }
-
-    let resp;
-
-    if ($thisUser && $thisUser.id != undefined) {
-      resp = await fetch(`${IPADRESS}players/${$thisUser.id}`);
-    } else {
-      resp = await fetch(IPADRESS + "players");
-    }
-
-    if (resp.ok) {
-      let respText = await resp.text();
-
-      let t: user[] = JSON.parse(respText);
-
-      if (t) {
-        for (let i = 0; i < t.length; i++) {
-          if ($thisUser?.publicID == t[i].publicID) {
-            $thisUser.alive = t[i].alive;
-            t.splice(i, 1);
-          }
-        }
-
-        otherUsers.set(t);
-      }
-    }
-  };
-
-  let kill = async (event: Event, userToKill: user) => {
-    event.preventDefault();
-
-    if (killUser == undefined || killUser.publicID != userToKill.publicID) {
-      killUser = userToKill;
-    } else {
-      let resp = await fetch(IPADRESS + "kill/" + userToKill.publicID, {
-        method: "POST",
-        body: $thisUser?.id,
-      });
-
-      if (!resp.ok) {
-        console.error(`error killing ${userToKill.name}`);
-      }
-
-      refresh(event);
-    }
-  };
-
-  let exit = (event?: Event) => {
-    if (event) {
-      event.preventDefault();
-    }
-
-    thisUser.set(undefined);
-    otherUsers.set(undefined);
-    id = "";
-    idSet = false;
-    removeCookie("id");
-    clearInterval(refreshIntervalId);
-
-    refresh();
-  };
 </script>
 
 <div
@@ -122,7 +18,7 @@
 >
 
     {#if !idSet}
-      <form onsubmit={setId} class="text-gray-700">
+      <form onsubmit={(event)=>{setId(event, id)}} class="text-gray-700">
         <input
           type="text"
           bind:value={id}
@@ -130,6 +26,7 @@
           placeholder="írd ide a kódot"
           class="rounded-xl"
         />
+        <button type="submit">Belépés</button>
       </form>
     {/if}
 
@@ -137,7 +34,7 @@
       <div class="w-full flex justify-between text-lg">
         Szia {$thisUser.name}
 
-        <button onclick={exit} aria-label="logout">
+        <button onclick={logout} aria-label="logout">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -170,7 +67,7 @@
         <button
           class="text-blue-300"
           onclick={() => {
-            killerPopup.set(!$killerPopup);
+            killerPopup.set(!$killerPopup)
           }}>kép</button
         >
         <br />
@@ -194,7 +91,7 @@
               aria-label="close"
               class="absolute top-2 right-2 z-20 p-0.5 rounded"
               onclick={() => {
-                killerPopup.set(!$killerPopup);
+                killerPopup.set(!$killerPopup)
               }}
             >
               <svg
@@ -234,8 +131,8 @@
                   class="bg-red-500"
                   onclick={(event) => {
                     if (killUser) {
-                      kill(event, killUser);
-                      killUser = undefined;
+                      kill(event, killUser)
+                      killUser = undefined
                     }
                   }}
                 >
@@ -244,7 +141,7 @@
                 <button
                   class="bg-green-500"
                   onclick={() => {
-                    killUser = undefined;
+                    killUser = undefined
                   }}
                 >
                   Nem, mert egy jó ember vagyok és meg akarom kímélni {killUser?.name}
@@ -257,20 +154,20 @@
       {/if}
 
       {#if $otherUsers}
-        <!-- Other users -->
+        <!-- Other players -->
         <div
           class="flex flex-col items-center text-lg *:w-full *:m-2 text-center *:rounded-full *:border-2 *:p-0.5"
         >
-          {#each $otherUsers as user, i}
-            {#if user.alive}
-              <!-- alive other user -->
+          {#each $otherUsers as player, i}
+            {#if player.alive}
+              <!-- alive other player -->
               <div class="bg-green-500 flex justify-center">
-                <span class="mr-2">{user.name} (alias {user.nickname})</span>
+                <span class="mr-2">{player.name} (alias {player.nickname})</span>
                 {#if $thisUser.isKiller}
                   <button
                     onclick={(event) => {
                       if (killUser == undefined) {
-                        kill(event, user);
+                        kill(event, player)
                       }
                     }}
                     aria-label="kill"
@@ -295,29 +192,29 @@
                 {/if}
               </div>
             {:else}
-              <!-- dead other user -->
+              <!-- dead other player -->
               <div class="bg-red-500">
-                {user.name} (alias {user.nickname})
+                {player.name} (alias {player.nickname})
               </div>
             {/if}
           {/each}
         </div>
-        <!-- /other users -->
+        <!-- /other players -->
       {/if}
     {:else if $otherUsers}
       <div
         class="flex flex-col items-center text-lg *:w-full *:m-2 text-center *:rounded-full *:border-2 *:p-0.5"
       >
-        {#each $otherUsers as user, i}
-          {#if user.alive}
-            <!-- alive other user -->
+        {#each $otherUsers as player, i}
+          {#if player.alive}
+            <!-- alive other player -->
             <div class="bg-green-500 flex justify-center">
-              <span class="mr-2">{user.nickname}</span>
+              <span class="mr-2">{player.nickname}</span>
             </div>
           {:else}
-            <!-- dead other user -->
+            <!-- dead other player -->
             <div class="bg-red-500">
-              {user.nickname}
+              {player.nickname}
             </div>
           {/if}
         {/each}

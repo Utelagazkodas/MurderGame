@@ -36,6 +36,7 @@ export function getUnixTime(): number {
 // CLASSES
 
 export class GameData {
+    idLength? : number
     meetingStart?: number
     gameWon?: number
     lastKill?: number
