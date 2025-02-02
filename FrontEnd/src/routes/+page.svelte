@@ -1,9 +1,7 @@
 <script lang="ts">
-  import { idSet, logout, setId} from "$lib/api.js";
-  import {
-
-    
-  } from "../lib/store.js"
+  import { gameState, kill, logout, setId} from "$lib/api.js";
+  import { writable } from "svelte/store";
+  import type { player } from "$lib/classes.js";
 
   let id : string = $state("")
 
@@ -11,14 +9,17 @@
     id = ""
   }
 
+  let killerPopup = writable(false)
+  let killUser : player | undefined = $state(undefined)
+
 </script>
 
 <div
   class="max-w-screen h-screen bg-gray-600 p-5"
 >
 
-    {#if !idSet}
-      <form onsubmit={(event)=>{setId(event, id)}} class="text-gray-700">
+    {#if $gameState && !$gameState.player}
+      <form onsubmit={async (event)=>{await setId(id, event)}} class="text-gray-700">
         <input
           type="text"
           bind:value={id}
@@ -30,11 +31,13 @@
       </form>
     {/if}
 
-    {#if $thisUser}
+    {#if $gameState && $gameState.player}
       <div class="w-full flex justify-between text-lg">
-        Szia {$thisUser.name}
+        Szia {$gameState.player.name}
 
-        <button onclick={logout} aria-label="logout">
+        <button onclick={(event)=>{
+          logout(event)
+        }} aria-label="logout">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
@@ -55,9 +58,9 @@
 
       <br />
 
-      {#if !$thisUser.isKiller}
+      {#if !$gameState.player.isKiller}
         <span class="text-green-300"> Nem te vagy a gyilkos </span>
-        {#if !$thisUser.alive}
+        {#if $gameState.player.revealDeath}
           viszont
           <span class="font-bold text-red-700">halott vagy </span> :(
         {/if}
@@ -123,7 +126,7 @@
             <div
               class="text-gray-200 bg-gray-700 p-3 rounded-lg border-2 border-gray-200"
             >
-              Biztos meg akarod ölni? <br /> Szerintem {killUser?.name} nagyon szomorú
+              Biztos meg akarod ölni? <br /> Szerintem {"akit meg akar ölni a neve"} nagyon szomorú
               lenne
 
               <div class="*:rounded *:border-2 *:p-1">
@@ -131,7 +134,7 @@
                   class="bg-red-500"
                   onclick={(event) => {
                     if (killUser) {
-                      kill(event, killUser)
+                      kill(killUser, event)
                       killUser = undefined
                     }
                   }}
@@ -153,21 +156,21 @@
         </dialog>
       {/if}
 
-      {#if $otherUsers}
+      {#if $gameState.players}
         <!-- Other players -->
         <div
           class="flex flex-col items-center text-lg *:w-full *:m-2 text-center *:rounded-full *:border-2 *:p-0.5"
         >
-          {#each $otherUsers as player, i}
+          {#each $gameState.players as player, i}
             {#if player.alive}
               <!-- alive other player -->
               <div class="bg-green-500 flex justify-center">
                 <span class="mr-2">{player.name} (alias {player.nickname})</span>
-                {#if $thisUser.isKiller}
+                {#if $gameState.player.isKiller}
                   <button
                     onclick={(event) => {
                       if (killUser == undefined) {
-                        kill(event, player)
+                        killUser = player
                       }
                     }}
                     aria-label="kill"
@@ -201,11 +204,11 @@
         </div>
         <!-- /other players -->
       {/if}
-    {:else if $otherUsers}
+    {:else if $gameState && $gameState.players}
       <div
         class="flex flex-col items-center text-lg *:w-full *:m-2 text-center *:rounded-full *:border-2 *:p-0.5"
       >
-        {#each $otherUsers as player, i}
+        {#each $gameState.players as player, i}
           {#if player.alive}
             <!-- alive other player -->
             <div class="bg-green-500 flex justify-center">

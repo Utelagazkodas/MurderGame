@@ -4,59 +4,82 @@ import {
     IPADRESS,
 
 
-} from "../lib/store.js"
+} from "./ip.js"
 import { setCookie, getCookie, removeCookie } from "typescript-cookie"
 import type { GameData, player } from "$lib/classes.js"
+import { writable, type Writable } from "svelte/store"
 
-export let idSet = $state(false)
+export let gameState: Writable<{ players: player[], gamedata: GameData, player?: player }> = writable()
 
-export let gameState: { players: player[], gamedata: GameData, player?: player }
+let localGameState : { players: player[], gamedata: GameData, player?: player }
+gameState.subscribe((val)=>{
+    localGameState = val
+})
+
 export let globalId: string = ""
 
 let refreshIntervalId: number
-onMount(async () => {
+
+export async function init(){ 
     await getIP()
 
     let t = getCookie("id")
 
-    refresh()
+    await refresh()
 
     if (t) {
-        setId(undefined, t)
+        
+        if(!(await setId(t, undefined))){
+            console.log(t)
+           removeCookie("id") 
+        }
+        
     }
-})
+}
 
-export async function setId(event?: Event, id?: string) {
+export async function setId(id: string, event?: Event): Promise<Boolean> {
     if (event) {
         event.preventDefault()
     }
 
-    if(gameState){
-        
+
+
+    if (localGameState && id != "" && id.length == localGameState.gamedata.idLength) {
+        globalId = id
+
+        if (!(await refresh())) {
+            globalId = ""
+            return false
+        }
+
+        setCookie("id", id, {expires: 365})
+        return true
     }
-    else{
+    else {
         refresh()
+        return false
     }
 }
 
 // refresh
-export async function refresh(event?: Event): Promise<boolean> {
+export async function refresh(event?: Event): Promise<boolean> { // returns true if logged in
     if (event) {
         event.preventDefault
     }
 
     let resp: Response
 
-    if (globalId.length == gameState.gamedata.idLength) {
+    if (localGameState&&globalId.length == localGameState.gamedata.idLength) {
         resp = await fetch(`${IPADRESS}players/${globalId}`);
     } else {
         resp = await fetch(IPADRESS + "players");
     }
 
     if (resp.ok) {
-        gameState = JSON.parse(await resp.text())
 
-        if (gameState.player) {
+        gameState.set(JSON.parse(await resp.text()))
+
+        if (localGameState.player) {
             return true
         }
     }
@@ -64,15 +87,26 @@ export async function refresh(event?: Event): Promise<boolean> {
 }
 
 //kill
-export async function kill(event: Event, playerToKill: player) {
-    event.preventDefault()
+export async function kill(playerToKill: player, event?: Event) : Promise<boolean> { // return true if sucessfully killed someone
+    if (event) {
+        event.preventDefault()
+    }
 
+    const resp = await fetch(`${IPADRESS}players/${playerToKill.publicID}`, {method: "POST", body: globalId})
 
+    console.log(await resp.text())
+    if(resp.ok){
+        return true
+    }
+    return false
 }
 
 // exit
 export async function logout(event?: Event) {
 
+    globalId=""
+
+    refresh()
 }
 
 // vote
