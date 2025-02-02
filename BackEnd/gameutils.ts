@@ -21,7 +21,8 @@ export async function getGameData(): Promise<GameData> {
         gameStart: GAMESTART, 
         revealDeath: REVEALDEATH, 
         killerID: await isGameGoing() ? undefined : killerPublicID,
-        isMeeting : await isMeeting()
+        isMeeting : await isMeeting(),
+        meetingLength : MEETINGLENGTH
     }
 }
 
