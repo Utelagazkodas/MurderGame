@@ -29,6 +29,10 @@ export const REVEALDEATH = Number((await kvconst.get(["REVEALDEATH"])).value)
 console.log("Game constants loaded", { IDLENGTH, NAMELENGTH, MEETINGLENGTH, KILLCOOLDOWN, GAMELENGTH, GAMESTART, REVEALDEATH })
 kvconst.close()
 
+export const STARTINGEXTRAKILLS = Number(Deno.env.get("EXTRAKILLS"))
+export const STARTINGMEETINGS = Number(Deno.env.get("MEETINGCALLS"))
+
+
 
 
 // initiates the sqlite database

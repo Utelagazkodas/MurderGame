@@ -47,6 +47,8 @@ export class GameData {
     killerID? : string
     isMeeting? : boolean
     meetingLength? : number
+    StartingExtraKills? : number
+    StartingMeetings? : number
 }
 
 export class player{
