@@ -9,7 +9,10 @@ export interface GameData {
     revealDeath: number
     killerID : string
     isMeeting : boolean
-    meetingLength : number
+    meetingLength : number    
+    StartingExtraKills : number
+    StartingMeetings : number
+
 }
 
 export interface player{

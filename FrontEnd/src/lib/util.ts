@@ -1,20 +1,32 @@
-export function secondsToDate(seconds: number): string {
+export function secondsToDate(seconds: number): { 
+    secs: number, 
+    mins: number, 
+    hours: number, 
+    days: number, 
+    secsString: string, 
+    minsString: string, 
+    hoursString: string, 
+    daysString: string, 
+    fullString: string 
+} {
     let remainder = seconds;
 
     let secs = remainder % 60;
-    let secsText = secs > 0 ? ` ${secs} másodperc ` : "";
+    let secsString = secs > 0 ? `${secs} másodperc` : "";
     remainder -= secs;
 
     let mins = Math.floor(remainder / 60) % 60;
-    let minsText = mins > 0 ? ` ${mins} perc ` : "";
+    let minsString = mins > 0 ? `${mins} perc` : "";
     remainder -= mins * 60;
 
     let hours = Math.floor(remainder / 3600) % 24;
-    let hoursText = hours > 0 ? ` ${hours} óra ` : "";
+    let hoursString = hours > 0 ? `${hours} óra` : "";
     remainder -= hours * 3600;
 
     let days = Math.floor(remainder / (3600 * 24));
-    let daysText = days > 0 ? ` ${days} nap ` : "";
+    let daysString = days > 0 ? `${days} nap` : "";
 
-    return daysText + hoursText + minsText + secsText;
+    let fullString = [daysString, hoursString, minsString, secsString].filter(Boolean).join(" ");
+
+    return { secs, mins, hours, days, secsString, minsString, hoursString, daysString, fullString };
 }

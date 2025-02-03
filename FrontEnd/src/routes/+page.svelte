@@ -15,10 +15,10 @@
 </script>
 
 <div
-  class="max-w-screen h-screen bg-gray-600 p-5"
+  class="max-w-screen   p-5 lg:px-96 lg:py-10"
 >
 
-    {#if $gameState && !$gameState.player}
+    {#if  !$gameState.player}
       <form onsubmit={async (event)=>{await setId(id, event)}} class="text-gray-700">
         <input
           type="text"
@@ -31,18 +31,18 @@
       </form>
     {/if}
 
-    {#if $gameState && $gameState.player}
-      <div class="w-full flex justify-between text-lg">
+    {#if  $gameState.player}
+      <div class="w-full flex justify-between text-lg text-white">
         Szia {$gameState.player.name}
 
         <button onclick={(event)=>{
           logout(event)
-        }} aria-label="logout">
+        }} class="p-2 border border-gray-800 bg-gray-700 rounded-full" aria-label="logout">
           <svg
             xmlns="http://www.w3.org/2000/svg"
             width="24"
             height="24"
-            viewBox="0 0 24 24"
+            viewBox="0 0 20 24"
             fill="none"
             stroke="currentColor"
             stroke-width="2"
@@ -204,7 +204,7 @@
         </div>
         <!-- /other players -->
       {/if}
-    {:else if $gameState && $gameState.players}
+    {:else if $gameState.players}
       <div
         class="flex flex-col items-center text-lg *:w-full *:m-2 text-center *:rounded-full *:border-2 *:p-0.5"
       >

@@ -1,8 +1,9 @@
 <script lang="ts">
   import { onMount } from 'svelte';
 	import '../app.css';
-  import { init } from '$lib/api';
+  import { gameState, init } from '$lib/api';
 	let { children } = $props();
+	import { Shadow } from 'svelte-loading-spinners';
 
 	onMount(init)
 </script>
@@ -18,4 +19,13 @@
 
 </div>
 
-{@render children()}
+<div class="h-[calc(100vh-3rem)] overflow-y-auto bg-gray-600">
+{#if $gameState}
+	{@render children()}
+{:else}
+	 <div class="bg-gray-600 h-full flex place-content-center items-center">
+		<Shadow duration="1.4s" size="50" color="#FFFFFF" unit="px"/>
+	 </div>
+{/if}
+</div>
+
