@@ -2,6 +2,8 @@
   import { gameState, kill, logout, setId} from "$lib/api.js";
   import { writable } from "svelte/store";
   import type { player } from "$lib/classes.js";
+  import RockPopUp from "../components/RockPopUp.svelte";
+  import KillPopUp from "../components/KillPopUp.svelte";
 
   let id : string = $state("")
 
@@ -10,7 +12,9 @@
   }
 
   let killerPopup = writable(false)
-  let killUser : player | undefined = $state(undefined)
+  let killUser : player | undefined = $state()
+
+  let rockPopup = writable(false)
 
 </script>
 
@@ -27,7 +31,7 @@
           placeholder="írd ide a kódot"
           class="rounded-xl"
         />
-        <button type="submit">Belépés</button>
+        <button type="submit" class="bg-gray-200 ml-4 p-1 rounded-md">Belépés</button>
       </form>
     {/if}
 
@@ -70,90 +74,16 @@
         <button
           class="text-blue-300"
           onclick={() => {
-            killerPopup.set(!$killerPopup)
+            rockPopup.set(true)
           }}>kép</button
         >
         <br />
         ezzel tudsz majd ölni, és egy pár órával utána itt öld meg a piros X-el amikor
         bejelenti
-        <dialog
-          class="overflow-hidden top-0 h-screen w-screen bg-gray-900/65 backdrop-blur text-right"
-          open={$killerPopup}
-        >
-          <!-- Relative container for the image and button -->
-          <div class="relative h-screen w-auto mx-auto flex justify-center">
-            <!-- Image -->
-            <img
-              src="/stone.jpeg"
-              class="z-10 h-screen w-auto object-contain p-2 rounded-2xl"
-              alt="stone"
-            />
+        
+        <RockPopUp open={rockPopup}/>
 
-            <!-- Close Button -->
-            <button
-              aria-label="close"
-              class="absolute top-2 right-2 z-20 p-0.5 rounded"
-              onclick={() => {
-                killerPopup.set(!$killerPopup)
-              }}
-            >
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                width="32"
-                height="32"
-                viewBox="0 0 24 24"
-                fill="none"
-                stroke="currentColor"
-                stroke-width="2"
-                stroke-linecap="round"
-                stroke-linejoin="round"
-                class="lucide lucide-x text-gray-200"
-              >
-                <path d="M18 6 6 18" />
-                <path d="m6 6 12 12" />
-              </svg>
-            </button>
-          </div>
-        </dialog>
-
-        <dialog
-          open={killUser != undefined && $killerPopup == false}
-          class="top-0 bg-transparent"
-        >
-          <div
-            class="w-screen top-0 h-screen backdrop-blur bg-gray-900/65 flex items-center justify-center"
-          >
-            <div
-              class="text-gray-200 bg-gray-700 p-3 rounded-lg border-2 border-gray-200"
-            >
-              Biztos meg akarod ölni? <br /> Szerintem {"akit meg akar ölni a neve"} nagyon szomorú
-              lenne
-
-              <div class="*:rounded *:border-2 *:p-1">
-                <button
-                  class="bg-red-500"
-                  onclick={(event) => {
-                    if (killUser) {
-                      kill(killUser, event)
-                      killUser = undefined
-                    }
-                  }}
-                >
-                  IGEN
-                </button>
-                <button
-                  class="bg-green-500"
-                  onclick={() => {
-                    killUser = undefined
-                  }}
-                >
-                  Nem, mert egy jó ember vagyok és meg akarom kímélni {killUser?.name}
-                  életét
-                </button>
-              </div>
-            </div>
-          </div>
-        </dialog>
+        <KillPopUp open={killerPopup} playerToKill={killUser}/>
       {/if}
 
       {#if $gameState.players}
