@@ -36,6 +36,20 @@ export async function init(){
         }
         
     }
+
+    if(localGameState){
+        refreshIntervalId= setInterval(refresh, 5000);
+    }
+    else {
+        refreshIntervalId= setInterval(async () => {
+            await refresh()
+
+            if(localGameState){
+                clearInterval(refreshIntervalId)
+                refreshIntervalId= setInterval(refresh, 5000);
+            }
+        }, 1000);
+    }
 }
 
 export async function setId(id: string, event?: Event): Promise<Boolean> {
@@ -116,6 +130,8 @@ export async function kill(playerToKill: player, event?: Event) : Promise<boolea
 export async function logout(event?: Event) {
 
     globalId=""
+
+    removeCookie("id")
 
     refresh()
 

@@ -22,7 +22,7 @@
     maradjon rajta kívül. Ha a gyilkost kiszavazzák vagy az idő lejár akkor a
     gyilkos veszít. A gyilkos ennek a
     <button
-      class="text-blue-400"
+      class="text-blue-400 no-underline hover:underline"
       onclick={() => {
         rockPopup.set(true);
       }}>képnek</button

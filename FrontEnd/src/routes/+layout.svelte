@@ -23,7 +23,7 @@
 {#if $gameState}
 	{@render children()}
 {:else}
-	 <div class="bg-gray-600 h-full flex place-content-center items-center">
+	 <div class=" h-full flex place-content-center items-center">
 		<Shadow duration="1.4s" size="50" color="#FFFFFF" unit="px"/>
 	 </div>
 {/if}
