@@ -8,6 +8,7 @@ import {
 import { setCookie, getCookie, removeCookie } from "typescript-cookie"
 import type { GameData, player } from "$lib/classes.js"
 import { writable, type Writable } from "svelte/store"
+import { isMeeting } from "./util.js"
 
 export let gameState: Writable<{ players: player[], gamedata: GameData, player?: player }> = writable()
 
@@ -92,12 +93,22 @@ export async function kill(playerToKill: player, event?: Event) : Promise<boolea
         event.preventDefault()
     }
 
-    const resp = await fetch(`${IPADRESS}players/${playerToKill.publicID}`, {method: "POST", body: globalId})
+    if(!localGameState || !localGameState.player || !localGameState.player.isKiller){
+        console.error("You cant kill someone because you are either not logged in or you are not the killer")
+        return false
+    }
+    if(isMeeting(localGameState.gamedata)){
+        console.error("You cant kill during a meeting")
+    }
+
+    const resp = await fetch(`${IPADRESS}kill/${playerToKill.publicID}`, {method: "POST", body: globalId})
 
     console.log(await resp.text())
     if(resp.ok){
+        console.log("sucesfully killed someone")
         return true
     }
+    console.error("failed to kill someone")
     return false
 }
 
@@ -107,14 +118,48 @@ export async function logout(event?: Event) {
     globalId=""
 
     refresh()
+
+    console.log("You logged out")
 }
 
 // vote
-export async function vote() {
+export async function vote(playerToVote : player, event? : Event) : Promise<boolean>{ // returns true if it is sucesfull
+    if(event){
+        event.preventDefault()
+    }
 
+    if(localGameState && localGameState.player && localGameState.player.revealDeath == null && isMeeting(localGameState.gamedata)){
+        const resp = await fetch(`${IPADRESS}vote/${playerToVote.publicID}`, {method: "POST", body: globalId})
+
+        console.log(await resp.text())
+        if(resp.ok){
+            console.log("sucesfully voted for someone")
+            return true
+        }
+        console.log("failed to vote for someone")
+        return false
+    }
+    console.error("You cant vote because you are not logged in or dead")
+    return false
 }
 
 // call meeting
-export async function canMeeting() {
+export async function callMeeting(event? : Event) : Promise<boolean> {
+    if(event){
+        event.preventDefault()
+    }
 
+    if(localGameState && localGameState.player && localGameState.player.revealDeath == null && localGameState.player.canCallMeeting > 0 && isMeeting(localGameState.gamedata)){
+        const resp = await fetch(`${IPADRESS}meeting`, {method: "POST", body: globalId})
+
+        console.log(await resp.text())
+        if(resp.ok){
+            console.log("sucesfully voted for someone")
+            return true
+        }
+        console.log("failed to vote for someone")
+        return false
+    }
+    console.error("You cant vote because you are not logged in or dead")
+    return false
 }

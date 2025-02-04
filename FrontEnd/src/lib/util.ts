@@ -1,3 +1,4 @@
+import type { GameData } from "./classes";
 export function secondsToDate(seconds: number): { 
     secs: number, 
     mins: number, 
@@ -30,3 +31,13 @@ export function secondsToDate(seconds: number): {
 
     return { secs, mins, hours, days, secsString, minsString, hoursString, daysString, fullString };
 }
+
+
+export function isMeeting(data : GameData) : boolean{
+    return data.meetingStart + data.meetingLength > getUnixTime()
+}
+
+export function getUnixTime(): number {
+    return Math.round(Date.now() / 1000)
+}
+

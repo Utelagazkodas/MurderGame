@@ -24,6 +24,6 @@ export interface player{
     nickname : string
     voteID : string
     alive : boolean
-    canCallMeeting : boolean
+    canCallMeeting : number
     extraKills : number
 }

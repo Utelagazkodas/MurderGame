@@ -8,7 +8,7 @@
 <PopUp open={open}>
     <img
     src="/stone.jpeg"
-    class="z-10 h-screen w-auto object-contain p-2 rounded-2xl "
+    class="z-10 h-screen w-auto object-contain p-2 rounded-2xl select-none"
     alt="stone"
   />
 </PopUp>
