@@ -32,7 +32,7 @@
   );
 </script>
 
-<div class="max-w-screen p-5 lg:px-96 lg:py-10">
+<div class="max-w-screen p-3 lg:px-96 lg:py-10">
   {#if !$gameState.player}
     <form
       onsubmit={async (event) => {
@@ -102,7 +102,7 @@
 
     <!-- MEETING PANEL -->
     <div
-      class="w-full flex place-content-center h-52 bg-gray-700 rounded-xl border-gray-950 p-4 py-6 *:mx-1"
+      class="w-full flex place-content-center h-40 bg-gray-700 rounded-xl border-gray-950 p-4 *:mx-1 lg:py-6 lg:px-4 lg:h-52"
     >
       {#if isMeeting($gameState.gamedata)}
         <div class="flex-1 text-white flex place-content-evenly">
@@ -135,15 +135,15 @@
         </div>
       {/if}
 
-      <div class="flex-1 flex place-content-center items-center relative">
+      <div class="flex-1 flex place-content-center items-center relative text-center">
         {#if  $gameState.player.canCallMeeting <= 0 }
           <div
-            class="aspect-square min-h-full bg-red-500 rounded-full flex items-center place-content-center text-xl z-10 border-l-8 border-b-8 border-red-900"
+            class="aspect-square min-h-full bg-red-500 rounded-full flex items-center place-content-center text-xl z-10 border-l-8 border-b-8 border-red-900 "
           >
             Meeting
           </div>
           <div
-            class="absolute w-full backdrop-blur-sm h-[calc(100%+16px)] rounded-2xl -top-2 bg-gray-600/50 flex items-center place-content-center text-3xl tracking-tighter z-10 text-white"
+            class="absolute w-full backdrop-blur-sm h-[calc(100%+16px)] rounded-2xl -top-2 bg-gray-600/50 flex items-center place-content-center text-xl  tracking-tighter z-10 text-white"
           >
             Nem tudsz meetinget hívni
           </div>
