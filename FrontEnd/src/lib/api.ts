@@ -21,12 +21,20 @@ export let globalId: string = ""
 
 let refreshIntervalId: number
 
+export let unixTime = writable(Math.floor(Date.now() / 1000));
+
+
+
 export async function init(){ 
     await getIP()
 
     let t = getCookie("id")
 
     await refresh()
+
+    setInterval(() => {
+        unixTime.set(Math.floor(Date.now() / 1000));
+      }, 1000);
 
     if (t) {
         
@@ -165,7 +173,7 @@ export async function callMeeting(event? : Event) : Promise<boolean> {
         event.preventDefault()
     }
 
-    if(localGameState && localGameState.player && localGameState.player.revealDeath == null && localGameState.player.canCallMeeting > 0 && isMeeting(localGameState.gamedata)){
+    if(localGameState && localGameState.player && localGameState.player.revealDeath == null && localGameState.player.canCallMeeting > 0 && !isMeeting(localGameState.gamedata)){
         const resp = await fetch(`${IPADRESS}meeting`, {method: "POST", body: globalId})
 
         console.log(await resp.text())
@@ -176,6 +184,6 @@ export async function callMeeting(event? : Event) : Promise<boolean> {
         console.log("failed to vote for someone")
         return false
     }
-    console.error("You cant vote because you are not logged in or dead")
+    console.error("You cant call meeting because you are not logged in or dead or it is already a meeting")
     return false
 }

@@ -10,12 +10,12 @@
   }: { thisPlayer: player; killUser: Writable<player | undefined> } = $props();
 </script>
 
-<div class="w-full m-2 rounded-full border-2 p-0.5 text-center bg-{thisPlayer.alive ? "green-500" : "red-500"}">
-  {#if thisPlayer.alive}
+<div class="w-full m-2 rounded-full border-2 max-w-[700px] p-0.5 text-center bg-{thisPlayer.alive ? "green-500" : "red-500"}">
+  {#if thisPlayer.alive }
     <!-- alive other player -->
     <div class="flex justify-center">
       <span class="mr-2">{thisPlayer.name ? `${thisPlayer.name} (${thisPlayer.nickname})` : thisPlayer.nickname}</span>
-      {#if $gameState.player && $gameState.player.isKiller && !isMeeting($gameState.gamedata)}
+      {#if $gameState.player && $gameState.player.isKiller && !isMeeting($gameState.gamedata) && thisPlayer.revealDeath == null}
         <button
           onclick={(event) => {
             if ($killUser == undefined) {

@@ -9,11 +9,18 @@ export default {
   theme: {
     extend: {
       aspectRatio: {
-        "9/16": "9 / 16",
-        "12/9": "12 / 9",
+        "4/5": "4 / 5",
       },
     },
   },
+
+  safelist: [
+    "text-red-500",
+    "text-green-500",
+    "bg-red-500",
+    "bg-green-500",
+    "line-through"
+  ],
 
   plugins: [typography, forms, containerQueries],
 } satisfies Config;

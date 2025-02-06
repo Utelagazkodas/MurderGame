@@ -1,10 +1,18 @@
 <script lang="ts">
-  import { gameState, kill, logout, setId } from "$lib/api.js";
+  import {
+    callMeeting,
+    gameState,
+    kill,
+    logout,
+    setId,
+    unixTime,
+  } from "$lib/api.js";
   import { derived, writable, type Writable } from "svelte/store";
   import type { player } from "$lib/classes.js";
   import KillPopUp from "../components/KillPopUp.svelte";
   import OtherPlayer from "../components/OtherPlayer.svelte";
-  import { isMeeting } from "$lib/util";
+  import { isMeeting, secondsToDate } from "$lib/util";
+  import CountDownSegment from "../components/CountDownSegment.svelte";
 
   let id: string = $state("");
 
@@ -22,12 +30,6 @@
   let deadStrikeThrough = derived(gameState, ($gameState) =>
     $gameState.player?.revealDeath == null ? "" : "line-through"
   );
-
-  let unixTime = writable(Math.floor(Date.now() / 1000));
-
-setInterval(() => {
-  unixTime.set(Math.floor(Date.now() / 1000));
-}, 1000);
 </script>
 
 <div class="max-w-screen p-5 lg:px-96 lg:py-10">
@@ -52,56 +54,119 @@ setInterval(() => {
   {/if}
 
   {#if $gameState.player}
-    <div class="w-full flex justify-between text-white items-center">
-      <div class="bg-gray-700 py-1 px-5 border-gray-800 rounded-lg">
-        <div class="{$deadStrikeThrough} text-2xl tracking-wider">
+    <div class="w-full flex justify-center text-white items-center">
+      <div
+        class="bg-gray-700 py-3 px-6 border-gray-800 border-2 rounded-lg relative"
+      >
+        <div class="{$deadStrikeThrough} text-4xl tracking-wider">
           {$gameState.player.name}
         </div>
 
         <div
-          class="text-lg tracking-normal text-{$color} {$deadStrikeThrough} pl-2"
+          class="text-lg tracking-normal text-{$color} {$deadStrikeThrough} pl-14 -mt-1"
         >
           {#if $gameState.player.isKiller}
-            Gyilkos
+            <div title="Te vagy a gyilkos!">Gyilkos</div>
           {:else}
-            Ártatlan
+            <div title="Ártatlan vagy">Ártatlan</div>
           {/if}
         </div>
-      </div>
 
-      <button
-        onclick={(event) => {
-          logout(event);
-        }}
-        class="p-2 border border-gray-800 bg-gray-700 rounded-full aspect-square h-max"
-        aria-label="logout"
-      >
-        <svg
-          xmlns="http://www.w3.org/2000/svg"
-          width="24"
-          height="24"
-          viewBox="0 0 20 24"
-          fill="none"
-          stroke="currentColor"
-          stroke-width="2"
-          stroke-linecap="round"
-          stroke-linejoin="round"
-          class="lucide lucide-log-out"
-          ><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline
-            points="16 17 21 12 16 7"
-          /><line x1="21" x2="9" y1="12" y2="12" /></svg
+        <button
+          onclick={(event) => {
+            logout(event);
+          }}
+          class="p-2 border border-gray-800 bg-gray-800 rounded-full aspect-square h-max absolute -right-4 top-3"
+          aria-label="logout"
         >
-      </button>
+          <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width="24"
+            height="24"
+            viewBox="0 0 20 24"
+            fill="none"
+            stroke="currentColor"
+            stroke-width="2"
+            stroke-linecap="round"
+            stroke-linejoin="round"
+            class="lucide lucide-log-out"
+            ><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4" /><polyline
+              points="16 17 21 12 16 7"
+            /><line x1="21" x2="9" y1="12" y2="12" /></svg
+          >
+        </button>
+      </div>
     </div>
 
     <br />
 
+    <!-- MEETING PANEL -->
+    <div
+      class="w-full flex place-content-center h-52 bg-gray-700 rounded-xl border-gray-950 p-4 py-6 *:mx-1"
+    >
+      {#if isMeeting($gameState.gamedata)}
+        <div class="flex-1 text-white flex place-content-evenly">
+          <CountDownSegment
+            number={secondsToDate(
+              $gameState.gamedata.meetingStart +
+                $gameState.gamedata.meetingLength -
+                $unixTime
+            ).mins}
+            text="Perc"
+          />
+          <CountDownSegment
+            number={secondsToDate(
+              $gameState.gamedata.meetingStart +
+                $gameState.gamedata.meetingLength -
+                $unixTime
+            ).secs}
+            text="Másodperc"
+          />
+        </div>
+      {:else}
+        <div class="flex-1 text-white flex place-content-evenly relative">
+          <CountDownSegment number={0} text="Perc" />
+          <CountDownSegment number={0} text="Másodperc" />
+          <div
+            class="absolute w-full backdrop-blur-sm h-[calc(100%+16px)] rounded-2xl -top-2 bg-gray-600/50 flex items-center place-content-center text-3xl tracking-tighter"
+          >
+            Nincs Meeting
+          </div>
+        </div>
+      {/if}
 
-    <div class="w-full flex place-content-center h-40 bg-gray-800 rounded-xl border-gray-950 p-1">
-      <div class="flex-1  text-white">{$unixTime}</div>
-      <button class="flex-1 bg-red-300"> Meeting </button>
+      <div class="flex-1 flex place-content-center items-center relative">
+        {#if  $gameState.player.canCallMeeting <= 0 }
+          <div
+            class="aspect-square min-h-full bg-red-500 rounded-full flex items-center place-content-center text-xl z-10 border-l-8 border-b-8 border-red-900"
+          >
+            Meeting
+          </div>
+          <div
+            class="absolute w-full backdrop-blur-sm h-[calc(100%+16px)] rounded-2xl -top-2 bg-gray-600/50 flex items-center place-content-center text-3xl tracking-tighter z-10 text-white"
+          >
+            Nem tudsz meetinget hívni
+          </div>
+        {:else if isMeeting($gameState.gamedata)}
+          <div
+            class="aspect-square min-h-full bg-red-500 rounded-full flex items-center place-content-center text-xl z-10 border-l-8 border-b-8 border-red-900"
+          >
+            Meeting
+          </div>
+          <div
+            class="absolute w-full backdrop-blur-sm h-[calc(100%+16px)] rounded-2xl -top-2 bg-gray-600/50 flex items-center place-content-center text-3xl tracking-tighter z-10 text-white"
+          >
+            Meeting van
+          </div>
+        {:else}
+          <button
+            class="aspect-square min-h-full bg-red-500 rounded-full flex items-center place-content-center text-xl z-10 border-l-8 border-b-8 border-red-900"
+            onclick={callMeeting}
+            >Meeting
+          </button>
+        {/if}
+      </div>
     </div>
-
   {/if}
 
   <hr class="my-3 mx-10" />
