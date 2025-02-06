@@ -23,6 +23,7 @@ let refreshIntervalId: number
 
 export let unixTime = writable(Math.floor(Date.now() / 1000));
 
+export let votedForId : Writable<string> = writable("")
 
 
 export async function init(){ 
@@ -103,6 +104,7 @@ export async function refresh(event?: Event): Promise<boolean> { // returns true
         gameState.set(JSON.parse(await resp.text()))
 
         if (localGameState.player) {
+            votedForId.set(localGameState.player.voteID ? localGameState.player.voteID : "")
             return true
         }
     }
@@ -158,6 +160,8 @@ export async function vote(playerToVote : player, event? : Event) : Promise<bool
         console.log(await resp.text())
         if(resp.ok){
             console.log("sucesfully voted for someone")
+
+            votedForId.set(playerToVote.publicID)
             return true
         }
         console.log("failed to vote for someone")

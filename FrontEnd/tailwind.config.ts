@@ -19,7 +19,9 @@ export default {
     "text-green-500",
     "bg-red-500",
     "bg-green-500",
-    "line-through"
+    "line-through",
+    "text-green-300",
+    "text-green-800"
   ],
 
   plugins: [typography, forms, containerQueries],
