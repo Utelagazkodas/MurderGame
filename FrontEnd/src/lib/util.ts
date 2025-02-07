@@ -8,7 +8,8 @@ export function secondsToDate(seconds: number): {
     minsString: string, 
     hoursString: string, 
     daysString: string, 
-    fullString: string 
+    fullString: string,
+    smallString: string
 } {
     let remainder = seconds;
 
@@ -28,8 +29,9 @@ export function secondsToDate(seconds: number): {
     let daysString = days > 0 ? `${days} nap` : "";
 
     let fullString = [daysString, hoursString, minsString, secsString].filter(Boolean).join(" ");
+    let smallString = `${days}:${hours}:${mins}:${secs}`
 
-    return { secs, mins, hours, days, secsString, minsString, hoursString, daysString, fullString };
+    return { secs, mins, hours, days, secsString, minsString, hoursString, daysString, fullString, smallString };
 }
 
 
@@ -39,5 +41,9 @@ export function isMeeting(data : GameData) : boolean{
 
 export function getUnixTime(): number {
     return Math.round(Date.now() / 1000)
+}
+
+export function fallBack(value : unknown, fallback : unknown) : unknown {
+    return value ? value : fallback
 }
 

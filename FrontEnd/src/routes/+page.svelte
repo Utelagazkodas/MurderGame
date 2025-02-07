@@ -136,7 +136,7 @@
       {/if}
 
       <div class="flex-1 flex place-content-center items-center relative text-center">
-        {#if  $gameState.player.canCallMeeting <= 0 }
+        {#if  $gameState.player.canCallMeeting <= 0 || !$gameState.player.alive}
           <div
             class="aspect-square min-h-full bg-red-500 rounded-full flex items-center place-content-center text-xl z-10 border-l-8 border-b-8 border-red-900 "
           >

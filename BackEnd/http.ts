@@ -30,17 +30,6 @@ async function get(req: Request, _inf: Deno.ServeHandlerInfo<Deno.NetAddr>) {
     const formatted: string = formatURL(req.url, false)
 
 
-    if (formatted.startsWith("id/") && formatted.length == IDLENGTH + 3) {
-        const id = searchID.all({ id: formatted.slice(3, formatted.length) });
-
-        if (id.length != 1) {
-
-            return new Response("id doesnt exist", { status: 404 })
-        }
-
-        return new Response(JSON.stringify(id[0]), { status: 200 })
-    }
-
     if (formatted.startsWith("players")) {
 
         const resp: { players: player[], gamedata: GameData, player?: player } = { players: [], gamedata: await getGameData() }

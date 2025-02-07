@@ -10,7 +10,7 @@
 
 <PopUp open={open}>
     <div class="text-gray-200 bg-gray-700 p-3 rounded-lg border-2 border-gray-200">
-        Biztos meg akarod ölni? <br /> Szerintem {"akit meg akar ölni a neve"} nagyon szomorú
+        Biztos meg akarod ölni? <br /> Szerintem {playerToKill?.name} nagyon szomorú
         lenne
       
         <div class="*:rounded *:border-2 *:p-1">
