@@ -15,6 +15,9 @@ export let gameState: Writable<{ players: player[], gamedata: GameData, player?:
 let localGameState : { players: player[], gamedata: GameData, player?: player }
 gameState.subscribe((val)=>{
     localGameState = val
+    if(val && val.player){
+    console.log(val.player?.canCallMeeting)
+    }
 })
 
 export let globalId: string = ""

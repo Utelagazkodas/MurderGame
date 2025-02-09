@@ -174,7 +174,7 @@
   {#if $gameState.players}
     <div class="flex flex-col items-center text-lg text-center">
       {#each $gameState.players as player, i}
-        <OtherPlayer {killUser} thisPlayer={player} />
+        <OtherPlayer killUser={killUser} killPopUp={killerPopup}  thisPlayer={player} />
       {/each}
     </div>
   {/if}

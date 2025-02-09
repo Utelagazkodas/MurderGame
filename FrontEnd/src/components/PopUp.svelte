@@ -18,7 +18,7 @@
 <!-- svelte-ignore a11y_no_noninteractive_element_interactions -->
 <!-- svelte-ignore a11y_click_events_have_key_events -->
 <dialog
-  class="overflow-hidden top-0 h-screen w-screen bg-gray-900/65 backdrop-blur text-right"
+  class="overflow-hidden top-0 h-screen w-screen bg-gray-900/65 backdrop-blur text-right z-20"
   open={$open}
   onclick={(_event)=>{
     if(outclickable){

@@ -8,7 +8,8 @@
   let {
     thisPlayer,
     killUser,
-  }: { thisPlayer: player; killUser: Writable<player | undefined> } = $props();
+    killPopUp
+  }: { thisPlayer: player, killUser: Writable<player | undefined>, killPopUp : Writable<boolean> } = $props();
 </script>
 
 <div
@@ -27,6 +28,7 @@
           onclick={(event) => {
             if ($killUser == undefined) {
               killUser.set(thisPlayer);
+              killPopUp.set(true)
             }
           }}
           aria-label="kill"
