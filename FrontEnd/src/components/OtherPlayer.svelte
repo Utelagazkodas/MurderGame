@@ -64,7 +64,7 @@
 
       {#if thisPlayer.revealDeath && $gameState.player?.isKiller}
         <div class="text-red-500" >
-          {secondsToDate(thisPlayer.revealDeath-$unixTime).smallString}
+          {secondsToDate(thisPlayer.revealDeath-$unixTime).altSmallString}
         </div>
       {/if}
     </div>

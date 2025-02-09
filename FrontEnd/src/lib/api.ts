@@ -12,12 +12,10 @@ import { isMeeting } from "./util.js"
 
 export let gameState: Writable<{ players: player[], gamedata: GameData, player?: player }> = writable()
 
-let localGameState : { players: player[], gamedata: GameData, player?: player }
-gameState.subscribe((val)=>{
+let localGameState: { players: player[], gamedata: GameData, player?: player }
+gameState.subscribe((val) => {
     localGameState = val
-    if(val && val.player){
-    console.log(val.player?.canCallMeeting)
-    }
+
 })
 
 export let globalId: string = ""
@@ -26,39 +24,43 @@ let refreshIntervalId: number
 
 export let unixTime = writable(Math.floor(Date.now() / 1000));
 
-export let votedForId : Writable<string> = writable("")
+export let votedForId: Writable<string> = writable("")
 
 
-export async function init(){ 
+export async function init() {
     await getIP()
 
     let t = getCookie("id")
 
     await refresh()
 
+    if (t) {
+
+        if (!(await setId(t, undefined))) {
+            console.log(t)
+            removeCookie("id")
+        }
+
+    }
+    
+    
+
     setInterval(() => {
         unixTime.set(Math.floor(Date.now() / 1000));
-      }, 1000);
+    }, 1000);
 
-    if (t) {
-        
-        if(!(await setId(t, undefined))){
-            console.log(t)
-           removeCookie("id") 
-        }
-        
-    }
 
-    if(localGameState){
-        refreshIntervalId= setInterval(refresh, 5000);
+
+    if (localGameState) {
+        refreshIntervalId = setInterval(refresh, 5000);
     }
     else {
-        refreshIntervalId= setInterval(async () => {
+        refreshIntervalId = setInterval(async () => {
             await refresh()
 
-            if(localGameState){
+            if (localGameState) {
                 clearInterval(refreshIntervalId)
-                refreshIntervalId= setInterval(refresh, 5000);
+                refreshIntervalId = setInterval(refresh, 5000);
             }
         }, 1000);
     }
@@ -79,7 +81,7 @@ export async function setId(id: string, event?: Event): Promise<Boolean> {
             return false
         }
 
-        setCookie("id", id, {expires: 365})
+        setCookie("id", id, { expires: 365 })
         return true
     }
     else {
@@ -94,13 +96,16 @@ export async function refresh(event?: Event): Promise<boolean> { // returns true
         event.preventDefault
     }
 
-    let resp: Response
+    let resp: Response 
 
-    if (localGameState&&globalId.length == localGameState.gamedata.idLength) {
-        resp = await fetch(`${IPADRESS}players/${globalId}`);
-    } else {
-        resp = await fetch(IPADRESS + "players");
-    }
+   
+        
+            if (localGameState && globalId.length == localGameState.gamedata.idLength) {
+                resp = await fetch(`${IPADRESS}players/${globalId}`);
+            } else {
+                resp = await fetch(IPADRESS + "players");
+            }
+
 
     if (resp.ok) {
 
@@ -115,23 +120,23 @@ export async function refresh(event?: Event): Promise<boolean> { // returns true
 }
 
 //kill
-export async function kill(playerToKill: player, event?: Event) : Promise<boolean> { // return true if sucessfully killed someone
+export async function kill(playerToKill: player, event?: Event): Promise<boolean> { // return true if sucessfully killed someone
     if (event) {
         event.preventDefault()
     }
 
-    if(!localGameState || !localGameState.player || !localGameState.player.isKiller){
+    if (!localGameState || !localGameState.player || !localGameState.player.isKiller) {
         console.error("You cant kill someone because you are either not logged in or you are not the killer")
         return false
     }
-    if(isMeeting(localGameState.gamedata)){
+    if (isMeeting(localGameState.gamedata)) {
         console.error("You cant kill during a meeting")
     }
 
-    const resp = await fetch(`${IPADRESS}kill/${playerToKill.publicID}`, {method: "POST", body: globalId})
+    const resp = await fetch(`${IPADRESS}kill/${playerToKill.publicID}`, { method: "POST", body: globalId })
 
     console.log(await resp.text())
-    if(resp.ok){
+    if (resp.ok) {
         console.log("sucesfully killed someone")
         return true
     }
@@ -142,7 +147,7 @@ export async function kill(playerToKill: player, event?: Event) : Promise<boolea
 // exit
 export async function logout(event?: Event) {
 
-    globalId=""
+    globalId = ""
 
     removeCookie("id")
 
@@ -152,16 +157,16 @@ export async function logout(event?: Event) {
 }
 
 // vote
-export async function vote(playerToVote : player, event? : Event) : Promise<boolean>{ // returns true if it is sucesfull
-    if(event){
+export async function vote(playerToVote: player, event?: Event): Promise<boolean> { // returns true if it is sucesfull
+    if (event) {
         event.preventDefault()
     }
 
-    if(localGameState && localGameState.player && localGameState.player.revealDeath == null && isMeeting(localGameState.gamedata)){
-        const resp = await fetch(`${IPADRESS}vote/${playerToVote.publicID}`, {method: "POST", body: globalId})
+    if (localGameState && localGameState.player && localGameState.player.revealDeath == null && isMeeting(localGameState.gamedata)) {
+        const resp = await fetch(`${IPADRESS}vote/${playerToVote.publicID}`, { method: "POST", body: globalId })
 
         console.log(await resp.text())
-        if(resp.ok){
+        if (resp.ok) {
             console.log("sucesfully voted for someone")
 
             votedForId.set(playerToVote.publicID)
@@ -175,16 +180,16 @@ export async function vote(playerToVote : player, event? : Event) : Promise<bool
 }
 
 // call meeting
-export async function callMeeting(event? : Event) : Promise<boolean> {
-    if(event){
+export async function callMeeting(event?: Event): Promise<boolean> {
+    if (event) {
         event.preventDefault()
     }
 
-    if(localGameState && localGameState.player && localGameState.player.revealDeath == null && localGameState.player.canCallMeeting > 0 && !isMeeting(localGameState.gamedata)){
-        const resp = await fetch(`${IPADRESS}meeting`, {method: "POST", body: globalId})
+    if (localGameState && localGameState.player && localGameState.player.revealDeath == null && localGameState.player.canCallMeeting > 0 && !isMeeting(localGameState.gamedata)) {
+        const resp = await fetch(`${IPADRESS}meeting`, { method: "POST", body: globalId })
 
         console.log(await resp.text())
-        if(resp.ok){
+        if (resp.ok) {
             console.log("sucesfully voted for someone")
             return true
         }

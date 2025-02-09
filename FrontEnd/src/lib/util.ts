@@ -9,7 +9,9 @@ export function secondsToDate(seconds: number): {
     hoursString: string, 
     daysString: string, 
     fullString: string,
-    smallString: string
+    smallString: string,
+    altFullString: string,
+    altSmallString : string
 } {
     let remainder = seconds;
 
@@ -29,9 +31,15 @@ export function secondsToDate(seconds: number): {
     let daysString = days > 0 ? `${days} nap` : "";
 
     let fullString = [daysString, hoursString, minsString, secsString].filter(Boolean).join(" ");
-    let smallString = `${days}:${hours}:${mins}:${secs}`
+    let altFullString = `${days} n ${hours} ó ${mins} p ${secs} m`;
 
-    return { secs, mins, hours, days, secsString, minsString, hoursString, daysString, fullString, smallString };
+    // Ensure two-digit formatting for smallString
+    const pad = (num: number) => String(num).padStart(2, "0");
+    let smallString = `${days} nap ${pad(hours)}:${pad(mins)}:${pad(secs)}`;
+
+    let altSmallString = `${pad(hours+(days*24))}:${pad(mins)}:${pad(secs)}`
+
+    return { secs, mins, hours, days, secsString, minsString, hoursString, daysString, fullString, smallString, altFullString, altSmallString };
 }
 
 

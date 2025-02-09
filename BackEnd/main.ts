@@ -102,3 +102,14 @@ else if(await isGameGoing() && getUnixTime() > GAMESTART + GAMELENGTH){
 
 // starts the http server
 Deno.serve({ port: PORT}, (req: Request, inf: Deno.ServeHandlerInfo<Deno.NetAddr>) => request(req, inf));
+
+
+// handle closing the kv database on unload
+globalThis.addEventListener("unload", ()=>{
+ kv.close()
+})
+
+Deno.addSignalListener("SIGINT", () => {
+    console.log("interrupted!");
+    Deno.exit();
+  });

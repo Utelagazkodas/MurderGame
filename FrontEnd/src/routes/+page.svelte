@@ -38,7 +38,7 @@
       onsubmit={async (event) => {
         await setId(id, event);
       }}
-      class="text-gray-700"
+      class="text-gray-700 flex place-content-center"
     >
       <input
         type="text"
@@ -54,7 +54,7 @@
   {/if}
 
   {#if $gameState.player}
-    <div class="w-full flex justify-center text-white items-center">
+    <div class="w-full flex justify-between text-white items-center mt-2">
       <div
         class="bg-gray-700 py-3 px-6 border-gray-800 border-2 rounded-lg relative"
       >
@@ -96,6 +96,11 @@
           >
         </button>
       </div>
+
+      <div class="h-full border-gray-800 border-2 rounded-lg bg-gray-700 py-3 px-6 text-lg">
+        Hátralévő idő: 
+        <br>{secondsToDate($gameState.gamedata.gameStart + $gameState.gamedata.gameLength - $unixTime).smallString}
+      </div>
     </div>
 
     <br />
@@ -128,7 +133,7 @@
           <CountDownSegment number={0} text="Perc" />
           <CountDownSegment number={0} text="Másodperc" />
           <div
-            class="absolute w-full backdrop-blur-sm h-[calc(100%+16px)] rounded-2xl -top-2 bg-gray-600/50 flex items-center place-content-center text-3xl tracking-tighter"
+            class="absolute w-full backdrop-blur-sm h-[calc(100%+16px)] rounded-2xl -top-2 bg-gray-600/50 flex items-center place-content-center text-3xl tracking-tighter text-center"
           >
             Nincs Meeting
           </div>
@@ -136,14 +141,14 @@
       {/if}
 
       <div class="flex-1 flex place-content-center items-center relative text-center">
-        {#if  $gameState.player.canCallMeeting <= 0 || !$gameState.player.alive}
+        {#if  $gameState.player.canCallMeeting <= 0 || $gameState.player.revealDeath != null}
           <div
             class="aspect-square min-h-full bg-red-500 rounded-full flex items-center place-content-center text-xl z-10 border-l-8 border-b-8 border-red-900 "
           >
             Meeting
           </div>
           <div
-            class="absolute w-full backdrop-blur-sm h-[calc(100%+16px)] rounded-2xl -top-2 bg-gray-600/50 flex items-center place-content-center text-xl  tracking-tighter z-10 text-white"
+            class="absolute w-full backdrop-blur-sm h-[calc(100%+16px)] rounded-2xl -top-2 bg-gray-600/50 flex items-center place-content-center text-xl lg:text-3xl  tracking-tighter z-10 text-white"
           >
             Nem tudsz meetinget hívni
           </div>
@@ -180,4 +185,4 @@
   {/if}
 </div>
 
-<KillPopUp open={killerPopup} playerToKill={$killUser} />
+<KillPopUp open={killerPopup} playerToKill={killUser} />
