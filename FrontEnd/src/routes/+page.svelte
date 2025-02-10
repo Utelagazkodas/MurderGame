@@ -34,23 +34,38 @@
 
 <div class="max-w-screen p-3 lg:px-96 lg:py-10">
   {#if !$gameState.player}
-    <form
-      onsubmit={async (event) => {
-        await setId(id, event);
-      }}
-      class="text-gray-700 flex place-content-center"
-    >
-      <input
-        type="text"
-        bind:value={id}
-        maxlength={16}
-        placeholder="írd ide a kódot"
-        class="rounded-xl"
-      />
-      <button type="submit" class="bg-gray-200 ml-4 p-1 rounded-md"
-        >Belépés</button
+    <div class="flex place-content-evenly items-center flex-wrap *:my-2">
+      <form
+        onsubmit={async (event) => {
+          if(!(await setId(id, event))){
+            resetIdTextInput()
+          }
+        }}
+        class="text-gray-700 flex place-content-center h-10"
       >
-    </form>
+        <input
+          type="text"
+          bind:value={id}
+          maxlength={16}
+          placeholder="írd ide a kódot"
+          class="rounded-xl w-60"
+        />
+        <button type="submit" class="bg-gray-200 ml-4 p-1 rounded-md"
+          >Belépés</button
+        >
+      </form>
+
+      <div
+        class="h-full border-gray-800 border-2 rounded-lg bg-gray-700 py-3 px-6 text-lg text-white"
+      >
+        Hátralévő idő:
+        <br />{secondsToDate(
+          $gameState.gamedata.gameStart +
+            $gameState.gamedata.gameLength -
+            $unixTime
+        ).smallString}
+      </div>
+    </div>
   {/if}
 
   {#if $gameState.player}
@@ -97,9 +112,15 @@
         </button>
       </div>
 
-      <div class="h-full border-gray-800 border-2 rounded-lg bg-gray-700 py-3 px-6 text-lg">
-        Hátralévő idő: 
-        <br>{secondsToDate($gameState.gamedata.gameStart + $gameState.gamedata.gameLength - $unixTime).smallString}
+      <div
+        class="h-full border-gray-800 border-2 rounded-lg bg-gray-700 py-3 px-6 text-lg"
+      >
+        Hátralévő idő:
+        <br />{secondsToDate(
+          $gameState.gamedata.gameStart +
+            $gameState.gamedata.gameLength -
+            $unixTime
+        ).smallString}
       </div>
     </div>
 
@@ -140,15 +161,17 @@
         </div>
       {/if}
 
-      <div class="flex-1 flex place-content-center items-center relative text-center">
-        {#if  $gameState.player.canCallMeeting <= 0 || $gameState.player.revealDeath != null}
+      <div
+        class="flex-1 flex place-content-center items-center relative text-center"
+      >
+        {#if $gameState.player.canCallMeeting <= 0 || $gameState.player.revealDeath != null}
           <div
-            class="aspect-square min-h-full bg-red-500 rounded-full flex items-center place-content-center text-xl z-10 border-l-8 border-b-8 border-red-900 "
+            class="aspect-square min-h-full bg-red-500 rounded-full flex items-center place-content-center text-xl z-10 border-l-8 border-b-8 border-red-900"
           >
             Meeting
           </div>
           <div
-            class="absolute w-full backdrop-blur-sm h-[calc(100%+16px)] rounded-2xl -top-2 bg-gray-600/50 flex items-center place-content-center text-xl lg:text-3xl  tracking-tighter z-10 text-white"
+            class="absolute w-full backdrop-blur-sm h-[calc(100%+16px)] rounded-2xl -top-2 bg-gray-600/50 flex items-center place-content-center text-xl lg:text-3xl tracking-tighter z-10 text-white"
           >
             Nem tudsz meetinget hívni
           </div>
@@ -179,7 +202,7 @@
   {#if $gameState.players}
     <div class="flex flex-col items-center text-lg text-center">
       {#each $gameState.players as player, i}
-        <OtherPlayer killUser={killUser} killPopUp={killerPopup}  thisPlayer={player} />
+        <OtherPlayer {killUser} killPopUp={killerPopup} thisPlayer={player} />
       {/each}
     </div>
   {/if}

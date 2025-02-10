@@ -7,11 +7,13 @@
     children,
     closeButton = true,
     outclickable = false,
+    onClose = ()=>{}
   }: {
     open: Writable<boolean>;
     children: Snippet<[]>;
     closeButton?: boolean;
     outclickable? : boolean;
+    onClose? : Function
   } = $props();
 </script>
 
@@ -23,6 +25,7 @@
   onclick={(_event)=>{
     if(outclickable){
       open.set(false)
+      onClose()
     }
   }}
 >
@@ -38,6 +41,7 @@
         class="absolute top-2 right-2 z-20 p-0.5 rounded-2xl bg-slate-900/70 backdrop-blur"
         onclick={() => {
           open.set(false);
+          onClose()
         }}
       >
         <svg
