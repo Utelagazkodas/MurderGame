@@ -84,6 +84,12 @@
             <div title="Te vagy a gyilkos!">Gyilkos</div>
           {:else}
             <div title="Ártatlan vagy">Ártatlan</div>
+
+            {#if $gameState.player.revealDeath != null && $gameState.player.revealDeath - $unixTime > 0}
+            <div class="text-red-500 no-underline" >
+              {secondsToDate($gameState.player.revealDeath-$unixTime).altSmallString}
+            </div>
+            {/if}
           {/if}
         </div>
 
@@ -164,7 +170,7 @@
       <div
         class="flex-1 flex place-content-center items-center relative text-center"
       >
-        {#if $gameState.player.canCallMeeting <= 0 || $gameState.player.revealDeath != null}
+        {#if $gameState.player.canCallMeeting <= 0 || $gameState.player.revealDeath != null || $gameState.gamedata.gameWon != 0}
           <div
             class="aspect-square min-h-full bg-red-500 rounded-full flex items-center place-content-center text-xl z-10 border-l-8 border-b-8 border-red-900"
           >

@@ -14,6 +14,10 @@
   if ($playerToKill?.revealDeath != null) {
     open.set(false);
   }
+
+  setInterval(() => {
+    console.log($gameState.gamedata.lastKill)
+  }, 1000);
 </script>
 
 <PopUp
@@ -29,12 +33,10 @@
       Biztos meg akarod ölni? <br /> Szerintem {$playerToKill?.name} nagyon szomorú
       lenne
       {#if $gameState.player?.extraKills > 0 && $gameState.gamedata.lastKill + $gameState.gamedata.killCoolDown > $unixTime}
-        Ezzel viszont felhasználsz egy Extra ölést és úgy már
-        {#if $gameState.player?.extraKills == 1}
-          nem fog maradni
-        {:else}
-          csak {$gameState.player?.extraKills - 1} fog maradni
-        {/if}
+        Extra öléset fog felhasználni ({$gameState.player.extraKills} van még)
+        <span>
+          Idő következő ölésig: <span class="text-red-500"> {secondsToDate($gameState.gamedata.lastKill + $gameState.gamedata.killCoolDown - $unixTime).altSmallString}</span>
+        </span>
       {/if}
 
       <div class="*:rounded *:border-2 *:p-1 *:m-1">

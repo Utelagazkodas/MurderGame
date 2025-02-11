@@ -12,7 +12,7 @@ let numOfPlayers: number = 0
 const players: { privateName: string, publicName: string, privateId: string }[] = []
 
 
-while (numOfPlayers < 4 || !numOfPlayers) {
+while (numOfPlayers < 5 || !numOfPlayers) {
     try {
         numOfPlayers = Number(prompt("How many players? (at least 5 are required)"))
     } catch (error) {

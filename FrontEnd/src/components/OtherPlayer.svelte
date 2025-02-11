@@ -71,8 +71,8 @@
     <div class="text-gray-700 text-center w-full flex justify-center text-base">
       {#if isMeeting($gameState.gamedata)}
         {#each $gameState.players as player}
-           {#if player.voteID == thisPlayer.publicID && player.voteID != null}
-            {fallBack(player.name, player.nickname)}
+           {#if player.publicID == thisPlayer.voteID && thisPlayer.voteID != null}
+            Rá szavazott: {fallBack(player.name, player.nickname)}
            {/if}
         {/each}
       {:else}

@@ -76,12 +76,10 @@ async function get(req: Request, _inf: Deno.ServeHandlerInfo<Deno.NetAddr>) {
 
 async function post(req: Request, _inf: Deno.ServeHandlerInfo<Deno.NetAddr>): Promise<Response> {
 
-    console.log("KUTYA GECI BASSZÁTOK MEG")
-    console.log(await isGameGoing())
-
     if (!(await isGameGoing())) {
         console.log("Game has ended, rejecting POST request.")
-        new Response("Game ended", { status: 500 })
+        
+        return new Response("Game ended", { status: 500 })
     }
 
     const formatted: string = formatURL(req.url, false)
@@ -118,6 +116,8 @@ async function post(req: Request, _inf: Deno.ServeHandlerInfo<Deno.NetAddr>): Pr
                             killAllCitisens.run()
                             console.log("Killer won by killing everyone")
                         }
+
+                        kv.set(["lastKill"], getUnixTime())
 
                         return new Response("Killed someone")
                     }

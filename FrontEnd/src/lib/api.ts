@@ -130,6 +130,7 @@ export async function kill(playerToKill: player, event?: Event): Promise<boolean
 
     if(localGameState.gamedata.gameWon != 0){
         console.error("you cant kill someone, the game is over")
+        return false
     }
 
     if (!localGameState || !localGameState.player || !localGameState.player.isKiller) {
@@ -142,6 +143,7 @@ export async function kill(playerToKill: player, event?: Event): Promise<boolean
 
     const resp = await fetch(`${IPADRESS}kill/${playerToKill.publicID}`, { method: "POST", body: globalId })
 
+    refresh()
     console.log(await resp.text())
     if (resp.ok) {
         console.log("sucesfully killed someone")
@@ -165,12 +167,17 @@ export async function logout(event?: Event) {
 
 // vote
 export async function vote(playerToVote: player, event?: Event): Promise<boolean> { // returns true if it is sucesfull
+    if(localGameState.gamedata.gameWon != 0){
+        console.error("you cant vote, the game is over")
+        return false
+    }
     if (event) {
         event.preventDefault()
     }
 
     if (localGameState && localGameState.player && localGameState.player.revealDeath == null && isMeeting(localGameState.gamedata)) {
         const resp = await fetch(`${IPADRESS}vote/${playerToVote.publicID}`, { method: "POST", body: globalId })
+        refresh()
 
         console.log(await resp.text())
         if (resp.ok) {
@@ -190,6 +197,7 @@ export async function vote(playerToVote: player, event?: Event): Promise<boolean
 export async function callMeeting(event?: Event): Promise<boolean> {
     if(localGameState.gamedata.gameWon != 0){
         console.error("you cant call meeting, the game is over")
+        return false
     }
 
     if (event) {
@@ -198,6 +206,7 @@ export async function callMeeting(event?: Event): Promise<boolean> {
 
     if (localGameState && localGameState.player && localGameState.player.revealDeath == null && localGameState.player.canCallMeeting > 0 && !isMeeting(localGameState.gamedata)) {
         const resp = await fetch(`${IPADRESS}meeting`, { method: "POST", body: globalId })
+        refresh()
 
         console.log(await resp.text())
         if (resp.ok) {
