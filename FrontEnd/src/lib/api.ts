@@ -47,6 +47,9 @@ export async function init() {
 
     setInterval(() => {
         unixTime.set(Math.floor(Date.now() / 1000));
+        if(Math.floor(Date.now() / 1000) >= localGameState.gamedata.meetingStart + localGameState.gamedata.meetingLength){
+            refresh()
+        }
     }, 1000);
 
 
@@ -125,6 +128,10 @@ export async function kill(playerToKill: player, event?: Event): Promise<boolean
         event.preventDefault()
     }
 
+    if(localGameState.gamedata.gameWon != 0){
+        console.error("you cant kill someone, the game is over")
+    }
+
     if (!localGameState || !localGameState.player || !localGameState.player.isKiller) {
         console.error("You cant kill someone because you are either not logged in or you are not the killer")
         return false
@@ -181,6 +188,10 @@ export async function vote(playerToVote: player, event?: Event): Promise<boolean
 
 // call meeting
 export async function callMeeting(event?: Event): Promise<boolean> {
+    if(localGameState.gamedata.gameWon != 0){
+        console.error("you cant call meeting, the game is over")
+    }
+
     if (event) {
         event.preventDefault()
     }

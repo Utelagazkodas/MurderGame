@@ -142,7 +142,7 @@
           />
           <CountDownSegment
             number={secondsToDate(
-              $gameState.gamedata.meetingStart +
+               $gameState.gamedata.meetingStart +
                 $gameState.gamedata.meetingLength -
                 $unixTime
             ).secs}

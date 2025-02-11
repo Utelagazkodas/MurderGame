@@ -15,6 +15,10 @@ export function secondsToDate(seconds: number): {
 } {
     let remainder = seconds;
 
+    if(seconds <0){
+        remainder = 0
+    }
+
     let secs = remainder % 60;
     let secsString = secs > 0 ? `${secs} másodperc` : "";
     remainder -= secs;

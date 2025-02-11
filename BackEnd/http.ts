@@ -76,7 +76,10 @@ async function get(req: Request, _inf: Deno.ServeHandlerInfo<Deno.NetAddr>) {
 
 async function post(req: Request, _inf: Deno.ServeHandlerInfo<Deno.NetAddr>): Promise<Response> {
 
-    if (!isGameGoing()) {
+    console.log("KUTYA GECI BASSZÁTOK MEG")
+    console.log(await isGameGoing())
+
+    if (!(await isGameGoing())) {
         console.log("Game has ended, rejecting POST request.")
         new Response("Game ended", { status: 500 })
     }
