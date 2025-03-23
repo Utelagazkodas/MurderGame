@@ -26,11 +26,13 @@ export const KILLCOOLDOWN = Number((await kvconst.get(["KILLCOOLDOWN"])).value)
 export const GAMELENGTH = Number((await kvconst.get(["GAMELENGTH"])).value)
 export const GAMESTART = Number((await kvconst.get(["GAMESTART"])).value)
 export const REVEALDEATH = Number((await kvconst.get(["REVEALDEATH"])).value)
-console.log("Game constants loaded", { IDLENGTH, NAMELENGTH, MEETINGLENGTH, KILLCOOLDOWN, GAMELENGTH, GAMESTART, REVEALDEATH })
+export const DEATHTIMEALTERNATION = Number((await kvconst.get(["DEATHTIMEALTERNATION"])).value)
+export const STARTINGEXTRAKILLS = Number((await kvconst.get(["STARTINGEXTRAKILLS"])).value)
+export const STARTINGMEETINGS = Number((await kvconst.get(["STARTINGMEETINGS"])).value)
+console.log("Game constants loaded", { IDLENGTH, NAMELENGTH, MEETINGLENGTH, KILLCOOLDOWN, GAMELENGTH, GAMESTART, REVEALDEATH, DEATHTIMEALTERNATION, STARTINGEXTRAKILLS, STARTINGMEETINGS})
 kvconst.close()
 
-export const STARTINGEXTRAKILLS = Number(Deno.env.get("EXTRAKILLS"))
-export const STARTINGMEETINGS = Number(Deno.env.get("MEETINGCALLS"))
+
 
 
 
@@ -46,7 +48,7 @@ export const allPlayers = db.prepare("SELECT nickname, (unixepoch() < revealDeat
 export const allPlayersKiller = db.prepare("SELECT nickname, (unixepoch() < revealDeath OR revealDeath IS NULL) AS alive, publicID, name, voteID, canCallMeeting, revealDeath FROM players where id IS NOT (:id)")
 export const publicAllPlayers = db.prepare("SELECT nickname, (unixepoch() < revealDeath OR revealDeath IS NULL) AS alive, publicID, voteID, canCallMeeting FROM players")
 
-export const killPlayer = db.prepare(`UPDATE players SET revealDeath=unixepoch()+ ${REVEALDEATH} WHERE publicID=(:publicID) AND revealDeath IS NULL AND isKiller=0`)
+export const killPlayer = db.prepare(`UPDATE players SET revealDeath=unixepoch()+ ${REVEALDEATH} + (random() % ${DEATHTIMEALTERNATION*2 + 1} - ${DEATHTIMEALTERNATION}) WHERE publicID=(:publicID) AND revealDeath IS NULL AND isKiller=0`)
 export const voteOutPlayer = db.prepare("UPDATE players SET revealDeath=-1 WHERE publicID=(:publicID) AND revealDeath IS NULL")
 
 export const votePlayer = db.prepare("UPDATE players SET voteID=(:voteID) WHERE id= (:privateID) AND revealDeath IS NULL")

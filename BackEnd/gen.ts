@@ -58,6 +58,8 @@ await kvgd.set(["meetingStart"], -1) // -1 is no meeting is going, any other is 
 await kvgd.set(["gameWon"], 0) // 0 is going -1 is killer won, 1 is citizens won
 await kvgd.set(["lastKill"], -1) // -1 is no kill has happened else its a unix timestamp
 
+export const STARTINGEXTRAKILLS = Number(Deno.env.get("EXTRAKILLS"))
+export const STARTINGMEETINGS = Number(Deno.env.get("MEETINGCALLS"))
 
 // KEY VALUE CONSTANTS
 const kvconst = await Deno.openKv("gamedata/consts.kv")
@@ -68,6 +70,10 @@ await kvconst.set(["KILLCOOLDOWN"], Number(Deno.env.get("KILLCOOLDOWN")))
 await kvconst.set(["GAMELENGTH"], Number(Deno.env.get("GAMELENGTH")))
 await kvconst.set(["GAMESTART"], getUnixTime())
 await kvconst.set(["REVEALDEATH"], Number(Deno.env.get("REVEALDEATH")))
+await kvconst.set(["DEATHTIMEALTERNATION"], Number(Deno.env.get("DEATHTIMEALTERNATION")))
+await kvconst.set(["STARTINGEXTRAKILLS"], STARTINGEXTRAKILLS)
+await kvconst.set(["STARTINGMEETINGS"], STARTINGMEETINGS)
+
 
 
 
