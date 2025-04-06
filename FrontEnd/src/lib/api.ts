@@ -10,14 +10,11 @@ import type { GameData, player } from "$lib/classes.js"
 import { writable, type Writable } from "svelte/store"
 import { isMeeting } from "./util.js"
 import { pushState } from "$app/navigation"
+import { get } from "svelte/store"
 
 export let gameState: Writable<{ players: player[], gamedata: GameData, player?: player }> = writable()
 
-let localGameState: { players: player[], gamedata: GameData, player?: player }
-gameState.subscribe((val) => {
-    localGameState = val
 
-})
 
 export let globalId: string = ""
 
@@ -37,12 +34,12 @@ export async function init() {
 
     let params = new URLSearchParams(window.location.search)
 
-    if(params.has("id") && params.get("id")?.length == localGameState.gamedata.idLength){
+    if (params.has("id") && params.get("id")?.length == get(gameState).gamedata.idLength) {
         t = params.get("id")!
     }
-    
+
     removeIdFromUrl()
-    
+
 
     if (t) {
 
@@ -52,26 +49,26 @@ export async function init() {
         }
 
     }
-    
-    
+
+
 
     setInterval(() => {
         unixTime.set(Math.floor(Date.now() / 1000));
-        if(Math.floor(Date.now() / 1000) >= localGameState.gamedata.meetingStart + localGameState.gamedata.meetingLength){
+        if (Math.floor(Date.now() / 1000) >= get(gameState).gamedata.meetingStart + get(gameState).gamedata.meetingLength) {
             refresh()
         }
     }, 1000);
 
 
 
-    if (localGameState) {
+    if (get(gameState)) {
         refreshIntervalId = setInterval(refresh, 5000);
     }
     else {
         refreshIntervalId = setInterval(async () => {
             await refresh()
 
-            if (localGameState) {
+            if (get(gameState)) {
                 clearInterval(refreshIntervalId)
                 refreshIntervalId = setInterval(refresh, 5000);
             }
@@ -86,7 +83,7 @@ export async function setId(id: string, event?: Event): Promise<Boolean> {
 
 
 
-    if (localGameState && id != "" && id.length == localGameState.gamedata.idLength) {
+    if (get(gameState) && id != "" && id.length == get(gameState).gamedata.idLength) {
         globalId = id
 
         if (!(await refresh())) {
@@ -105,27 +102,31 @@ export async function setId(id: string, event?: Event): Promise<Boolean> {
 
 // refresh
 export async function refresh(event?: Event): Promise<boolean> { // returns true if logged in
+    let currentState = get(gameState);
+
+
     if (event) {
         event.preventDefault
     }
 
-    let resp: Response 
+    let resp: Response
 
-   
-        
-            if (localGameState && globalId.length == localGameState.gamedata.idLength) {
-                resp = await fetch(`${IPADRESS}players/${globalId}`);
-            } else {
-                resp = await fetch(IPADRESS + "players");
-            }
+
+
+    if (currentState && globalId.length == currentState.gamedata.idLength) {
+        resp = await fetch(`${IPADRESS}players/${globalId}`);
+    } else {
+        resp = await fetch(IPADRESS + "players");
+    }
 
 
     if (resp.ok) {
 
         gameState.set(JSON.parse(await resp.text()))
+        currentState = get(gameState)
 
-        if (localGameState.player) {
-            votedForId.set(localGameState.player.voteID ? localGameState.player.voteID : "")
+        if (currentState.player) {
+            votedForId.set(currentState.player.voteID ? currentState.player.voteID : "")
             return true
         }
     }
@@ -134,20 +135,22 @@ export async function refresh(event?: Event): Promise<boolean> { // returns true
 
 //kill
 export async function kill(playerToKill: player, event?: Event): Promise<boolean> { // return true if sucessfully killed someone
+    const currentState = get(gameState);
+
     if (event) {
         event.preventDefault()
     }
 
-    if(localGameState.gamedata.gameWon != 0){
+    if (currentState.gamedata.gameWon != 0) {
         console.error("you cant kill someone, the game is over")
         return false
     }
 
-    if (!localGameState || !localGameState.player || !localGameState.player.isKiller) {
+    if (!currentState || !currentState.player || !currentState.player.isKiller) {
         console.error("You cant kill someone because you are either not logged in or you are not the killer")
         return false
     }
-    if (isMeeting(localGameState.gamedata)) {
+    if (isMeeting(currentState.gamedata)) {
         console.error("You cant kill during a meeting")
     }
 
@@ -177,7 +180,8 @@ export async function logout(event?: Event) {
 
 // vote
 export async function vote(playerToVote: player, event?: Event): Promise<boolean> { // returns true if it is sucesfull
-    if(localGameState.gamedata.gameWon != 0){
+    const currentState = get(gameState);
+    if (currentState.gamedata.gameWon != 0) {
         console.error("you cant vote, the game is over")
         return false
     }
@@ -185,7 +189,7 @@ export async function vote(playerToVote: player, event?: Event): Promise<boolean
         event.preventDefault()
     }
 
-    if (localGameState && localGameState.player && localGameState.player.revealDeath == null && isMeeting(localGameState.gamedata)) {
+    if (currentState && currentState.player && currentState.player.revealDeath == null && isMeeting(currentState.gamedata)) {
         const resp = await fetch(`${IPADRESS}vote/${playerToVote.publicID}`, { method: "POST", body: globalId })
         refresh()
 
@@ -205,7 +209,8 @@ export async function vote(playerToVote: player, event?: Event): Promise<boolean
 
 // call meeting
 export async function callMeeting(event?: Event): Promise<boolean> {
-    if(localGameState.gamedata.gameWon != 0){
+    const currentState = get(gameState);
+    if (currentState.gamedata.gameWon != 0) {
         console.error("you cant call meeting, the game is over")
         return false
     }
@@ -214,7 +219,7 @@ export async function callMeeting(event?: Event): Promise<boolean> {
         event.preventDefault()
     }
 
-    if (localGameState && localGameState.player && localGameState.player.revealDeath == null && localGameState.player.canCallMeeting > 0 && !isMeeting(localGameState.gamedata)) {
+    if (currentState && currentState.player && currentState.player.revealDeath == null && currentState.player.canCallMeeting > 0 && !isMeeting(get(gameState).gamedata)) {
         const resp = await fetch(`${IPADRESS}meeting`, { method: "POST", body: globalId })
         refresh()
 

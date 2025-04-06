@@ -1,4 +1,4 @@
-export let IPADRESS = "http://0.0.0.0:3000/"
+export let IPADRESS : string | undefined = undefined
 
 export async function getIP() : Promise<boolean> {
     let resp = await fetch(`./ip`)

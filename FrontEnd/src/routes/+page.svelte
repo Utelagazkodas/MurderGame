@@ -13,6 +13,7 @@
   import OtherPlayer from "../components/OtherPlayer.svelte";
   import { isMeeting, secondsToDate } from "$lib/util";
   import CountDownSegment from "../components/CountDownSegment.svelte";
+  import { IPADRESS } from "$lib/ip";
 
   let id: string = $state("");
 
@@ -279,8 +280,9 @@
 
   {#if $gameState.players}
     <div class="flex flex-col items-center text-lg text-center">
-      {#each $gameState.players as player, i}
-        <OtherPlayer {killUser} killPopUp={killerPopup} thisPlayer={player} />
+      {#each $gameState.players as player, i (player.publicID)}
+        {@html console.log("Rendering player", i, player.name, player.publicID)}
+        <OtherPlayer thisPlayer={player} {killUser} killPopUp={killerPopup} />
       {/each}
     </div>
   {/if}
