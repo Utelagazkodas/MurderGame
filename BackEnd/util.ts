@@ -49,6 +49,7 @@ export class GameData {
     meetingLength? : number
     StartingExtraKills? : number
     StartingMeetings? : number
+    DeathTimeAlteration? : number
 }
 
 export class player{

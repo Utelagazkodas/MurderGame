@@ -15,9 +15,7 @@
     open.set(false);
   }
 
-  setInterval(() => {
-    console.log($gameState.gamedata.lastKill)
-  }, 1000);
+
 </script>
 
 <PopUp

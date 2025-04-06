@@ -9,6 +9,7 @@ import { setCookie, getCookie, removeCookie } from "typescript-cookie"
 import type { GameData, player } from "$lib/classes.js"
 import { writable, type Writable } from "svelte/store"
 import { isMeeting } from "./util.js"
+import { pushState } from "$app/navigation"
 
 export let gameState: Writable<{ players: player[], gamedata: GameData, player?: player }> = writable()
 
@@ -33,6 +34,15 @@ export async function init() {
     let t = getCookie("id")
 
     await refresh()
+
+    let params = new URLSearchParams(window.location.search)
+
+    if(params.has("id") && params.get("id")?.length == localGameState.gamedata.idLength){
+        t = params.get("id")!
+    }
+    
+    removeIdFromUrl()
+    
 
     if (t) {
 
@@ -218,4 +228,10 @@ export async function callMeeting(event?: Event): Promise<boolean> {
     }
     console.error("You cant call meeting because you are not logged in or dead or it is already a meeting")
     return false
+}
+
+function removeIdFromUrl() {
+    const url = new URL(window.location.href)
+    url.searchParams.delete('id')
+    pushState(url, {})
 }

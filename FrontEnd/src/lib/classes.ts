@@ -12,7 +12,7 @@ export interface GameData {
     meetingLength : number    
     StartingExtraKills : number
     StartingMeetings : number
-
+    DeathTimeAlteration : number
 }
 
 export interface player{

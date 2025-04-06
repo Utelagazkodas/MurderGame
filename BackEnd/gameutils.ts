@@ -1,4 +1,4 @@
-import { endMeeting, IDLENGTH, killerPublicID, revealDead, STARTINGEXTRAKILLS, STARTINGMEETINGS, voteOutPlayer } from "./main.ts";
+import { DEATHTIMEALTERNATION, endMeeting, IDLENGTH, killerPublicID, revealDead, STARTINGEXTRAKILLS, STARTINGMEETINGS, voteOutPlayer } from "./main.ts";
 import { GAMELENGTH, GAMESTART, KILLCOOLDOWN, kv, MEETINGLENGTH, REVEALDEATH, getVotes } from "./main.ts";
 import { GameData, getUnixTime } from "./util.ts";
 
@@ -24,7 +24,8 @@ export async function getGameData(): Promise<GameData> {
         isMeeting : await isMeeting(),
         meetingLength : MEETINGLENGTH,
         StartingExtraKills : STARTINGEXTRAKILLS,
-        StartingMeetings: STARTINGMEETINGS
+        StartingMeetings: STARTINGMEETINGS,
+        DeathTimeAlteration : DEATHTIMEALTERNATION
     }
 }
 

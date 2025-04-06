@@ -39,7 +39,8 @@ for (let i = 0; i < numOfPlayers; i++) {
 
     t.privateId = await generate(IDLENGTH)
 
-    console.log(t.privateId)
+    console.log("https://murder.cant.hu/?id="+t.privateId)
+    console.log("http://localhost:5173/?id="+t.privateId)
 
     players.push(t)
 }
